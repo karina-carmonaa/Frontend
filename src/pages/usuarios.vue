@@ -10,7 +10,7 @@
                @click="EditarPerfil()" color="black" label="Editar grupo" /></div>
           </div>
             <div class=" col column q-pt-xl q-ml-md" >
-                <div v-for="(item, index) in ListaUsuarios" :key="item.id">
+                <div v-for="(item) in ListaUsuarios" :key="item.id">
                     <q-item clickable v-ripple @click="MenuUsuario()">
                         <q-item-section avatar>
                         <q-avatar>
@@ -57,7 +57,7 @@ export default {
             this.$router.push('/menuUsuario')
         },
         obtenerUsuarios(){
-            axios.get("/users").then( res => {
+            axios.get("/cuentas/1/users").then( res => {
                 this.ListaUsuarios = res.data.data
                 console.log(this.ListaUsuarios)
             });

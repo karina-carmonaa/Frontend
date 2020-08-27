@@ -32,8 +32,9 @@
                   </q-input>
               <q-select v-model="genero" :options="options" label="Género" stack-label :dense="dense"
                 transition-show="jump-up" transition-hide="jump-up" />
-              <q-input v-model="Altura" label="Altura" stack-label :dense="dense" type="number" />
-              <q-input v-model="Talla" label="Talla" stack-label :dense="dense" type="number" />
+              <q-input v-model="telefono" label="Teléfono" stack-label :dense="dense" type="number" />
+              <q-input v-model="correo" label="Email" stack-label :dense="dense" type="number" />
+              <q-input v-model="contr" label="Contrase" stack-label :dense="dense" type="number" />
             </div>
           </div>
           <q-footer class="q-px-xl">
