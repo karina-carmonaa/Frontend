@@ -15,6 +15,10 @@
               </q-toolbar>
             </q-header>
             <q-page-container class="column row q-ma-xl col q-mr-sm">
+                <div class="row">
+                  <MyMap /> 
+                  <p>Hola</p>
+                </div>
                 <p class="text-center text-subtitle1"> ¿En qué zona siente dolor?</p>
                 <div>
                   <q-img
@@ -34,7 +38,9 @@
     </div>
 </template>
 
+
 <script>
+import MyMap from 'components/MyMAp.vue'
 import Footer from 'components/piePagina.vue'
 import urlImagen from "assets/body-delante.png"
 import urlImagen2 from "assets/body-detras.png"
@@ -52,7 +58,6 @@ export default {
             this.$router.go(-1)
         },
         cambiarImagen(url){
-          console.log(url)
           if (url === 'img/body-delante.png') {
             this.url = urlImagen2
           }else{
@@ -61,7 +66,8 @@ export default {
         }
     },
   components: {
-    Footer
+    Footer,
+    MyMap
   }
 }
 </script>
