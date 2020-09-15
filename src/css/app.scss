@@ -4,3 +4,21 @@
     background: #DBDBDB;
     margin-bottom: 50px;
 }
+
+.area {
+    width: 100%;
+  height: auto;
+  stroke: #666;
+  stroke-width: 1;
+  stroke-linecap: round;
+  stroke-linejoin: round; }
+  .svg-map__location {
+    background: #DBDBDB;
+    fill: #f6f8f8ab;
+    cursor: pointer; }
+    .svg-map__location:focus, .svg-map__location:hover {
+      fill: #84dcf1;
+      outline: 0; }
+    .svg-map__location[aria-checked="true"] {
+      fill: #f4bc44; ;
+  }

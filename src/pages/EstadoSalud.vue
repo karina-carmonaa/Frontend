@@ -20,7 +20,16 @@
                   <p>Hola</p>
                 </div>
                 <p class="text-center text-subtitle1"> ¿En qué zona siente dolor?</p>
+                 <div>
+                  <map name="image-map-1" class="area">
+                  
+                        <area href="#" alt="HOMBRO" shape="poly" coords="122,218,129,162,148,144,176,141,199,153,167,160,163,160,163,170,161,189,122,218" class="svg-map__location" >
+                        <area href="#" alt="MANO" shape="circle" coords="75,425,40" class="svg-map__location" >
+                  </map>
+                      <img src="~assets/body-delante.png" usemap="#image-map-1" alt="Mapa de imagen de ejemplo">
+                  </div>
                 <div>
+                    
                   <q-img
                     :src="url"
                     spinner-color="white"
@@ -37,6 +46,7 @@
         </q-layout>
     </div>
 </template>
+
 
 
 <script>
