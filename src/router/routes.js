@@ -6,7 +6,6 @@ const routes = [
     component: () => import('layouts/MainLayout.vue'),
     children: [
       { path: '', component: () => import('pages/usuarios.vue') },
-      {path: '/menuUsuario', component: () => import('pages/menuUsuario.vue')},
       {path: '/EstadoHoyEjemplo', component: () => import('pages/EstadoHoyEjemplo.vue')}
     ]
   },
@@ -14,7 +13,7 @@ const routes = [
     path: '/Menu',
     component: ()  => import('layouts/MenuUsuarios.vue'),
     children: [
-      
+      {path: '/menuUsuario', component: () => import('pages/menuUsuario.vue')},
     ]
   },
 
@@ -26,7 +25,7 @@ const routes = [
   },
   
   { path: '/EditarPerfil', component: () => import('pages/EditarPerfil.vue') },
-  { path: '/nuevoUsuario', component: () => import('pages/nuevoUsuario.vue') },
+  { path: '/nuevoUsuario/:id', component: () => import('pages/nuevoUsuario.vue') },
   { path: '/EstadoSalud', component: () => import('pages/EstadoSalud.vue') },
   { path: '/Seguimiento', component: () => import('pages/seguimientoSalud.vue') },
   { path: '/Historial', component: () => import('pages/HistorialMedico.vue') },

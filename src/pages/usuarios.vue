@@ -11,84 +11,83 @@
             </div>
           </div>
             <div class=" col column q-pt-xl q-ml-md" >                
-                <!--  para crear un nuevo usuario, guardar
-                  <button @click="crearUsuario">Crear usuario</button> -->
                 <div v-for="(item) in ListaUsuarios" :key="item.id">
-                    <q-item clickable v-ripple @click="MenuUsuario()">
-                        <q-item-section avatar>
+                    <q-item>
+                        <!-- <q-item-section avatar>
                         <q-avatar>
                             <img :src= "item.imagen">
                         </q-avatar>
+                        </q-item-section> -->
+                        <q-item-section class="text-left" rounded clickable v-ripple @click="MenuUsuario(item.id)">
+                          {{item.attributes.name}}  </q-item-section>
+                        <q-item-section top side>
+                          <div class="text-grey-8 q-gutter-xs">
+                            <q-btn size="12px" flat dense round icon="more_vert" >
+                            <q-menu >
+                              <q-list style="min-width: 150px">
+                                <q-item clickable v-close-popup  @click="editarPerfilUsuario(item.id)">
+                                  <q-item-section>Editar perfil</q-item-section>
+                                </q-item>
+                                <q-separator />
+                                <q-item clickable v-close-popup  @click="eliminarPerfil(item.id)">
+                                  <q-item-section>Eliminar perfil</q-item-section>
+                                </q-item>
+                              </q-list>
+                            </q-menu>
+
+                            </q-btn>
+                          </div>
                         </q-item-section>
-                        <q-item-section>{{item.attributes.name}}  </q-item-section>
                     </q-item>
-                </div>  
+                </div> 
                 <q-btn dense unelevated @click="MenuUsuario"> Karina</q-btn>
             </div> 
-            <div class=" q-ml-md q-pb-xl">
-                <q-separator />
-                <q-item clickable v-ripple @click="agregarUsuario">
-                    <q-item-section avatar>
-                        <q-btn unelevated round icon="add" />
-                    </q-item-section>
-                    <q-item-section>Agregar Usuario</q-item-section>
-                </q-item>
-            </div>
     </div>
   </q-page>
 </template>
 
 <script>
+import { LocalStorage, SessionStorage } from 'quasar'
+
 import axios from "axios";
 // axios.defaults.withCredentials = true;
 axios.defaults.baseURL = "http://agemed.test/api/v1";
 axios.defaults.headers = { "Content-Type": "application/vnd.api+json" };
-//axios.defaults.baseURL = "http://localhost:8000/agemed/public/api/v1";
 export default {
   name: "usuarios",
   data() {
     return {
       show: true,
-      ListaUsuarios: null,
-      user: {
-        data: {
-          type: "users",
-          attributes: {
-            name: "Karina Carmona 2",
-            email: "karina2@gmail.com",
-            password: "password",
-            cuenta_id: 24,
-            telefono: "9991339966",
-            sexo: "Femenino",
-            direccion: "Calle 53 #321 x 14a",
-            fecha_nacimiento: "1988-09-09",
-          },
-        },
-      },
+      ListaUsuarios: null
     };
   },
   methods: {
-    agregarUsuario() {
-      this.$router.push("/nuevoUsuario");
-    },
     EditarPerfil() {
       this.$router.push("/EditarPerfil");
     },
-    MenuUsuario() {
+    MenuUsuario(id) {
+      localStorage.setItem('id_usuario',id)
       this.$router.push("/menuUsuario");
     },
     obtenerUsuarios() {
       axios.get("/cuentas/1/users").then((res) => {
         this.ListaUsuarios = res.data.data;
-        console.log(this.ListaUsuarios);
+        localStorage.setItem('id_cuenta', JSON.stringify(1))
       });
     },
-    crearUsuario() {
-      console.log(this.user)
-      axios.post("/users", this.user).then((res) => {
-        console.log(res.data);
-      });
+    editarPerfilUsuario(id){
+      this.$router.push("/nuevoUsuario/"+id)
     },
+    eliminarPerfil(id){
+      axios.delete("/users/"+id).then((res) => {
+        this.$q.notify('Usuario eliminado')
+      })
+      this.ListaUsuarios = null
+      axios.get("/cuentas/1/users").then((res) => {
+        this.ListaUsuarios = res.data.data;
+        localStorage.setItem('id_cuenta', JSON.stringify(1))
+      });
+    }
   },
   mounted() {
     this.obtenerUsuarios();
@@ -98,5 +97,8 @@ export default {
 <style lang="scss">
 .bg-btn {
   opacity: 0.5;
+}
+.bg-color{
+  background-color:#2193b0;
 }
 </style>

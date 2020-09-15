@@ -21,19 +21,9 @@
                   round
                   icon="menu"
                   aria-label="Menu"
-                /><!-- 
-                <span class="q-subtitle-1 q-pl-md">
-                  INICIO
-                </span>
-                  
-                  <div class="q-px-lg q-pt-xl q-mb-md">
-                    <div class="text-h3">Pacientes</div>
-                    <div class="text-subtitle1">Hola</div>
-                  </div> -->
-                  <!-- <q-img
-                    src="~assets/perros.png"
-                  class="header-image absolute-top" /> -->
+                />
               </q-toolbar>
+              <q-btn flat label="Agregar" no-caps @click="agregarUsuario" class="absolute-right q-pt-md"/>
             </q-header>
 
             <q-drawer elevated
@@ -99,21 +89,26 @@ export default {
       carga: false
     }
   },
-    beforeCreate() {
-      this.timer = setTimeout(() => {
-        this.carga=false
-        this.timer = void 0
-      }, 2000)
-    },
-    computed:{
-      bgClass(){
-        if(this.carga){
-          return 'bg-inicio'
-        } else{
-          return 'bg-primeraPagina'
-        }
+  beforeCreate() {
+    this.timer = setTimeout(() => {
+      this.carga=false
+      this.timer = void 0
+    }, 2000)
+  },
+  computed:{
+    bgClass(){
+      if(this.carga){
+        return 'bg-inicio'
+      } else{
+        return 'bg-primeraPagina'
       }
     }
+  },
+  methods:{
+    agregarUsuario(){
+      this.$router.push("/nuevoUsuario/0");
+    }
+  }
 }
 </script>
  <style lang="scss">

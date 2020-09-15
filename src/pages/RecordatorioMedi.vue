@@ -38,13 +38,13 @@
               </q-slide-item>
             </q-list>
 
-              <div v-if="!ListaMedicamentos.length"
+              <!-- <div v-if="ListaMedicamentos == null || ListaMedicamentos.lenght == 0"
                 class=" q-pa-md row items-center justify-around no-tasks absolute-center">
                 <q-icon class="items-center" name="check" size="100px" color="primary" />
                 <div class="text-h5 text-primary text-center">
                   No hay recordatorios
                 </div>
-              </div>
+              </div> -->
               <q-footer>
                 <Footer />
               </q-footer>
@@ -54,19 +54,15 @@
 </template>
 
 <script>
+import axios from "axios";
+axios.defaults.baseURL = "http://agemed.test/api/v1";
 import Footer from 'components/piePagina.vue'
 export default {
     name: 'RecordatorioMedi',
     data() {
       return {
-        ListaMedicamentos: [
-          {nombre: 'Vitamina C', vecesDia: 'Una vez al día', aplicar: 'Todos los días',
-          tratamiento: 'Tratamiento continuo', hora: '10:00', periodo: 'am'},
-          {nombre: 'Vitamina B3', vecesDia: 'Una vez al día', aplicar: 'Todos los días',
-          tratamiento: 'Tratamiento continuo', hora: '3:00', periodo: 'pm'},
-          {nombre: 'Gotas de ojos', vecesDia: '2 veces al día', aplicar: 'Martes',
-          tratamiento: '26 Junio - 28 Agosto', hora: '3:00 pm, 8:00', periodo: 'pm'}
-        ]
+        ListaMedicamentos: null,
+        DatosHistorial: null
       }
     },
     methods:{
@@ -84,16 +80,31 @@ export default {
           this.$q.notify('Alarma activida.')
           this.finalize(reset)
         },
-
         finalize (reset) {
           this.timer = setTimeout(() => {
             reset()
           }, 1000)
+        },
+        obtenerMedicamentos(){    
+          let idUsuario = JSON.parse(localStorage.getItem('id_usuario'))
+          axios.get("/users/"+idUsuario +"/historial").then((res) => {            
+            this.DatosHistorial = res.data.data;
+            localStorage.setItem('id_historial', JSON.parse(this.DatosHistorial.id))
+            axios.get(this.DatosHistorial.relationships.medicamentos.links.related)
+              .then((respuesta) => {
+                this.ListaMedicamentos = respuesta.data
+                console.log(this.ListaMedicamentos)
+              })
+
+          })
         }
     },
-  components: {
-    Footer
-  }
+    components: {
+      Footer
+    },    
+    mounted() {
+      this.obtenerMedicamentos();
+    },
 }
 </script>
 

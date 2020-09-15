@@ -7,34 +7,27 @@
               icon="arrow_back_ios"/>
             <q-btn flat  dense size="sm" round @click="atras" class="platform-android-only"
               icon="arrow_back"/>
-            <span class="q-subtitle-2 absolute-center ">
-                Nuevo usuario
+            <span class="q-subtitle-2 absolute-center">
+              <span v-if="id === (0).toString()"> Nuevo usuario</span>              
+              <span v-else> Editar usuario</span>
             </span>
-            <q-btn flat label="Guardar" size="sm" class="absolute-right"/>
+            <q-btn flat label="Guardar" v-if="id === (0).toString()" @click="crearUsuario" size="sm" class="absolute-right"/>
+            <q-btn flat label="Guardar" v-else @click="actualizarUsuario" size="sm" class="absolute-right"/>
           </q-toolbar>
         </q-header>
         <q-page-container>
           <div class="col q-pa-lg q-ml-md text-center">
-            <q-avatar size="56px" class="q-mb-sm">
+            <!-- <q-avatar size="56px" class="q-mb-sm">
               <img src="~assets/nuevoUsuario.jpg">
-            </q-avatar>
+            </q-avatar> -->
             <div class="q-gutter-y-md column">
               <q-input v-model="text" label="Nombre completo" stack-label :dense="dense" />
-              <q-input v-model="Fecha" label="Fecha de nacimiento" 
-                  stack-label mask="date" :rules="['date']">
-                    <template v-slot:append>
-                      <q-icon name="event" class="cursor-pointer">
-                        <q-popup-proxy :breakpoint="600">
-                          <q-date v-model="Fecha" />
-                        </q-popup-proxy>
-                      </q-icon>
-                    </template>
-                  </q-input>
-              <q-select v-model="genero" :options="options" label="Género" stack-label :dense="dense"
-                transition-show="jump-up" transition-hide="jump-up" />
-              <!-- <q-input v-model="telefono" label="Teléfono" stack-label :dense="dense" type="number" />
-              <q-input v-model="correo" label="Email" stack-label :dense="dense" type="number" />
-              <q-input v-model="contr" label="Contrase" stack-label :dense="dense" type="number" /> -->
+              <q-input v-model="Fecha" type="date" transition-show="scale" transition-hide="scale"
+                  mask="date" label="Fecha de nacimiento"  stack-label />
+              <q-select v-model="genero" :options="OpcGenero" label="Género" stack-label :dense="dense"
+                transition-show="jump-up" transition-hide="jump-up"  />
+              <q-input v-model="telefono"  mask="(###) ### - ####" 
+                unmasked-value label="Télefono" :dense="dense" />
             </div>
           </div>
           <q-footer class="q-px-xl">
@@ -47,29 +40,85 @@
 
 <script>
 import Footer from 'components/piePagina.vue'
+import axios from "axios";
+axios.defaults.baseURL = "http://agemed.test/api/v1";
+axios.defaults.headers = { "Content-Type": "application/vnd.api+json" };
 export default {
   data() {
     return {
-      model: null,
-      options: [
-        'Hombre','Mujer'
+      OpcGenero: [
+        'Masculino','Femenino'
       ],
+      id: this.$route.params.id,
       text: '',
       Fecha: '',
-      genero: '',
-      Altura: '',
-      Talla: '',
+      genero: null,
+      telefono: '',
       dense: false,
-      ListaUsuarios: []
+      usuario: null
     }    
   },
   methods: {
     atras(){
       this.$router.go(-1)
+    },  
+    crearUsuario() { 
+        axios.post("/users", {
+          data: {
+            type: "users",
+            attributes: {
+              name: this.text,
+              cuenta_id: 1,
+              telefono: this.telefono,
+              sexo: this.genero,
+              fecha_nacimiento: this.Fecha
+            }  
+          } 
+        }).then((res) => {
+        this.$q.notify('Usuario guardado')
+        this.$router.go(-1)
+        });
+        this.telefono = ''
+        this.text = ''
+        this.genero = null
+        this.Fecha = ''
+    },
+    obtenerUsuario(){
+      axios.get("/users/"+this.id).then((res) => {
+        this.usuario = res.data.data.attributes;
+        this.text = this.usuario.name
+        this.telefono = this.usuario.telefono
+        this.genero = this.usuario.sexo
+        this.Fecha = this.usuario.fecha_nacimiento
+      })
+    },
+    actualizarUsuario(){
+      axios.patch("/users/"+this.id, {
+        data: {
+          type: "users",
+          id: this.id,
+          attributes: {
+            name: this.text,
+            cuenta_id: 1,
+            telefono: this.telefono,
+            sexo: this.genero,
+            fecha_nacimiento: this.Fecha
+          }  
+        } 
+      })
+      .then((res) => {         
+        this.$q.notify('Usuario guardado')
+        this.$router.go(-1)
+      })
     }
   },
   components: {
     Footer
-  }
+  },
+  mounted() {
+    if(this.id != 0){
+      this.obtenerUsuario();
+    }
+  },
 }
 </script>

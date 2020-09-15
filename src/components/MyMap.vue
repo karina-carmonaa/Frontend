@@ -4,7 +4,7 @@
  
 <script>
 import { SvgMap } from "vue-svg-map";
-import Taiwan from "@svg-maps/mexico";
+import Taiwan from "@svg-maps/mexico";  
  
 export default {
     name: "MyMap",

@@ -18,17 +18,6 @@
                     <p class="text-caption margen text-black">Medicamento:</p>
                   </template> 
                 </q-input>
-<!--                 <q-input class="text-center" bottom-slots type="number"
-                    filled dense v-model="presentacion" input-class="text-center">
-                    <template v-slot:before>
-                      <p class="text-caption margen text-black ">Presentación:</p>
-                    </template> 
-                    <template v-slot:after>
-                      <q-select class="margen" filled dense v-model="medida"
-                        :options="Medidas" transition-show="jump-up" transition-hide="jump-up">
-                      </q-select>
-                    </template> 
-                    </q-input>  --> 
                 <div class="row">
                   <div class="col-7">
                     <q-input class="text-center" bottom-slots type="number"
@@ -51,18 +40,18 @@
                         <q-item-label> cada </q-item-label>
                       </q-item-section>
                       <q-item-section >
-                        <q-select borderless filled dense v-model="horas" :options="diasOp"/>
+                        <q-select borderless filled dense v-model="horas" @input="borrarHorarios" :options="diasOp"/>
                       </q-item-section>
                       <q-item-section class="q-pl-md">
                         <q-item-label v-if="horas == 1 || horas == null "> hora </q-item-label>
                         <q-item-label v-else-if="horas > 1 "> horas  </q-item-label>
                       </q-item-section>       
                     </q-item>
-                    <div v-if="horas > 2  && horas < 13 " class="q-pb-sm">
+                    <div v-if="horas > 2  && horas < 13 " class="q-pb-sm" >
                       <p class="text-center q-mt-md">
                         Horarios sugeridos: 
-                      </p> <!-- "'horariosSugeridos '+ horas + 'Horas'" -->
-                      <q-select v-if="horas == 3" borderless dense  filled v-model="horarios" :options="horariosSugeridos3Horas"/> 
+                      </p>
+                      <q-select v-if="horas == 3" borderless dense filled v-model="horarios" :options="horariosSugeridos3Horas"/>
                       <q-select v-if="horas == 4" borderless dense  filled v-model="horarios" :options="horariosSugeridos4Horas"/> 
                       <q-select v-if="horas == 5" borderless dense  filled v-model="horarios" :options="horariosSugeridos5Horas"/> 
                       <q-select v-if="horas == 6" borderless dense  filled v-model="horarios" :options="horariosSugeridos6Horas"/> 
@@ -72,6 +61,7 @@
                       <q-select v-if="horas == 10" borderless dense  filled v-model="horarios" :options="horariosSugeridos10Horas"/> 
                       <q-select v-if="horas == 11" borderless dense  filled v-model="horarios" :options="horariosSugeridos11Horas"/> 
                       <q-select v-if="horas == 12" borderless dense  filled v-model="horarios" :options="horariosSugeridos12Horas"/> 
+                      <br>
                     </div>
                   </div>
                 <q-select class="text-center" bottom-slots filled dense v-model="duracion"
@@ -89,34 +79,8 @@
                     <br>                  
                 <q-input v-model="dateFin" filled type="date" transition-show="scale" transition-hide="scale"
                   mask="date" label="Fecha final" today  stack-label input-class="text-center" />
-                <!-- <div class="p-item">
-                  <q-item clickable v-ripple to="/Repetir">
-                    <q-item-section>Personalizar</q-item-section>
-                    <q-item-section avatar>
-                      <q-icon name="arrow_forward_ios" class="platform-ios-only " />
-                      <q-icon name="arrow_forward" class="platform-android-only " />
-                    </q-item-section>
-                  </q-item>
-                </div> -->
-                
-                
-<!--                 <q-toggle v-model="repetir" label="Repetir" class="text-h6" />
-                <div v-if="repetir">
-
-                  <q-select class="text-center" bottom-slots filled dense v-model="frecuencia"
-                    :options="opcFrecuencia" transition-show="jump-up" transition-hide="jump-up">
-                    <template v-slot:before>
-                      <p class="text-caption margen ">Repetir:</p>
-                    </template> 
-                  </q-select>
-
-                  <q-btn flat label="Personalizado" dense round @click="Personalizar" class="platform-ios-only"
-                  icon-right="arrow_forward_ios"
-                />
-                <q-btn flat label="Personalizado" dense size="sm" round @click="Personalizar" class="platform-android-only"
-                  icon-right="arrow_forward"
-                />
-                </div> -->
+                  <br>
+                <q-toggle v-model="repetir" label="Activar recordatorio" size="sm" left-label class="text-subtitle1 float-right" />
               </div>
               
               <q-footer>
@@ -150,85 +114,81 @@ export default {
         text: null,
         duracion: null,
         horarios: null,
-        medida: '',
-        presentacion: '',
         Medidas: [ 'ml','mg'],
         dosis: '',
+        repetir: true,
         horariosSugeridos3Horas: [
-          '7:00 am, 10:00 am, 1:00 pm, 4:00 pm, 7:00 pm',
-          '8:00 am, 11:00 am, 2:00 pm, 5:00 pm, 8:00 pm',
-          '9:00 am, 12:00 pm, 3:00 pm, 6:00 pm, 9:00 pm'
+          { label: '7:00 am, 10:00 am, 1:00 pm, 4:00 pm, 7:00 pm', value: '7,10,13,16,19' },
+          { label: '8:00 am, 11:00 am, 2:00 pm, 5:00 pm, 8:00 pm', value: '8,11,14,17,20' },
+          { label: '9:00 am, 12:00 pm, 3:00 pm, 6:00 pm, 9:00 pm', value: '9,12,15,18,21' }
         ],
         horariosSugeridos4Horas: [
-          '8:00 am, 12:00 pm, 4:00 pm, 8:00 pm ',
-          '9:00 am, 1:00 pm, 5:00 pm, 9:00 pm ',
-          '10:00 am, 2:00 pm, 6:00 pm, 10:00 pm '
+          { label: '8:00 am, 12:00 pm, 4:00 pm, 8:00 pm', value: '8,12,16,20' },
+          { label: '9:00 am, 1:00 pm, 5:00 pm, 9:00 pm', value: '9,13,17,21' },
+          { label: '10:00 am, 2:00 pm, 6:00 pm, 10:00 pm', value: '10,14,18,22' }
         ],
         horariosSugeridos5Horas: [
-          '8:00 am, 1:00 pm, 6:00 pm ',
-          '9:00 am, 2:00 pm, 7:00 pm ',
-          '10:00 am, 3:00 pm, 8:00 pm ',
-          '11:00 am, 4:00 pm, 9:00 pm ',
-          '12:00 pm, 5:00 pm, 10:00 pm '
+          { label: '8:00 am, 1:00 pm, 6:00 pm', value: '8,13,18' },
+          { label: '9:00 am, 2:00 pm, 7:00 pm', value: '9,14,19' },
+          { label: '10:00 am, 3:00 pm, 8:00 pm', value: '10,15,20' },
+          { label: '11:00 am, 4:00 pm, 9:00 pm', value: '11,16,21' },
+          { label: '12:00 pm, 5:00 pm, 10:00 pm', value: '12,17,22' }
         ],
         horariosSugeridos6Horas: [
-          '8:00 am, 2:00 pm, 8:00 pm',
-          '9:00 am, 3:00 pm, 9:00 pm',
-          '10:00 am, 4:00 pm, 10:00 pm ',
-          '11:00 am, 5:00 pm, 11:00 pm '
+          { label: '8:00 am, 2:00 pm, 8:00 pm', value: '8,14,20' },
+          { label: '9:00 am, 3:00 pm, 9:00 pm', value: '9,15,21' },
+          { label: '10:00 am, 4:00 pm, 10:00 pm', value: '10,16,22' },
+          { label: '11:00 am, 5:00 pm, 11:00 pm', value: '11,17,23' }
         ],
         horariosSugeridos7Horas: [
-          '8:00 am, 3:00 pm, 9:00 pm',
-          '9:00 am, 4:00 pm, 10:00 pm',
-          '10:00 am, 5:00 pm, 11:00 pm '
+          { label: '8:00 am, 3:00 pm, 9:00 pm', value: '8,15,21' },
+          { label: '9:00 am, 4:00 pm, 10:00 pm', value: '9,16,22' },
+          { label: '10:00 am, 5:00 pm, 11:00 pm', value: '10,17,23' }
         ],
         horariosSugeridos8Horas: [
-          '8:00 am, 4:00 pm ',
-          '9:00 am, 5:00 pm ',
-          '10:00 am, 6:00 pm ',
-          '11:00 am, 7:00 pm ',
-          '12:00 pm, 8:00 pm ',
-          '1:00 pm, 9:00 pm ',
-          '2:00 pm, 10:00 pm ',
-          '3:00 pm, 11:00 pm '
+          { label: '8:00 am, 4:00 pm', value: '8,16' },
+          { label: '9:00 am, 5:00 pm', value: '9,17' },
+          { label: '10:00 am, 6:00 pm', value: '10,18' },
+          { label: '11:00 am, 7:00 pm ', value: '11,19' },
+          { label: '12:00 pm, 8:00 pm', value: '12,20' },
+          { label: '1:00 pm, 9:00 pm', value: '13,21' },
+          { label: '2:00 pm, 10:00 pm', value: '14,22' },
+          { label: '3:00 pm, 11:00 pm', value: '15,23' }
         ],
         horariosSugeridos9Horas: [
-          '8:00 am, 5:00 pm',
-          '9:00 am, 6:00 pm',
-          '10:00 am, 7:00 pm',
-          '11:00 am, 8:00 pm',
-          '12:00 pm, 9:00 pm',
-          '1:00 pm, 10:00 pm',
-          '2:00 pm, 11:00 pm'
+          { label: '8:00 am, 5:00 pm', value: '8,17' },
+          { label: '9:00 am, 6:00 pm', value: '9,18' },
+          { label: '10:00 am, 7:00 pm', value: '10,19' },
+          { label: '11:00 am, 8:00 pm', value: '11,20' },
+          { label: '12:00 pm, 9:00 pm', value: '12,21' },
+          { label: '1:00 pm, 10:00 pm', value: '13,22' },
+          { label: '2:00 pm, 11:00 pm', value: '14,23' }
         ],
         horariosSugeridos10Horas: [
-          '8:00 am, 6:00 pm',
-          '9:00 am, 7:00 pm',
-          '10:00 am, 8:00 pm',
-          '11:00 am, 9:00 pm',
-          '12:00 pm, 10:00 pm',
-          '1:00 pm, 11:00 pm'
+          { label: '8:00 am, 6:00 pm', value: '8,18' },
+          { label: '9:00 am, 7:00 pm', value: '9,19' },
+          { label: '10:00 am, 8:00 pm', value: '10,20' },
+          { label: '11:00 am, 9:00 pm', value: '11,21' },
+          { label: '12:00 pm, 10:00 pm', value: '12,22' },
+          { label: '1:00 pm, 11:00 pm', value: '13,23' }
         ],
         horariosSugeridos11Horas: [
-          '8:00 am, 7:00 pm',
-          '9:00 am, 8:00 pm',
-          '10:00 am, 9:00 pm',
-          '11:00 am, 10:00 pm',
-          '12:00 pm, 11:00 pm'
+          { label: '8:00 am, 7:00 pm', value: '8,19' },
+          { label: '9:00 am, 8:00 pm', value: '9,20' },
+          { label: '10:00 am, 9:00 pm', value: '10,21' },
+          { label: '11:00 am, 10:00 pm', value: '11,22' },
+          { label: '12:00 pm, 11:00 pm', value: '12,23' }
         ],
         horariosSugeridos12Horas: [
-          '8:00 am, 8:00 pm',
-          '9:00 am, 9:00 pm',
-          '10:00 am, 10:00 pm',
-          '11:00 am, 11:00 pm',
-          '12:00 am, 12:00 pm',
+          { label: '8:00 am, 8:00 pm', value: '8,20' },
+          { label: '9:00 am, 9:00 pm', value: '9,21' },
+          { label: '10:00 am, 10:00 pm', value: '10,22' },
+          { label: '11:00 am, 11:00 pm', value: '11,21' },
+          { label: '12:00 am, 12:00 pm', value: '0,12' }
         ],
         hora: '',
-        date: '2018/11/03',
-        options: [
-        'Continuo','Establecer periodo'
-        ],
-        dateInicio: '2018-11-03',
+        date: '',
+        dateInicio: '',
         dateFin: '',
       }
     },
@@ -236,16 +196,19 @@ export default {
       atras(){
         this.$router.go(-1)
       },
-      Personalizar(){
-
-      },
-      generarHorario(){
+      borrarHorarios(){
+        this.horarios = null
         console.log("hola")
-        
+      },
+      fechaActual(){
+        this.dateInicio = "2020-09-10"
       }
     },
   components: {
     Footer
+  },
+  mounted() {
+    this.fechaActual(); 
   }
 }
 </script>
