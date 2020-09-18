@@ -38,6 +38,8 @@ const routes = [
   {path: '/Ingresos', component: () => import('pages/Ingresos.vue')},
   {path: '/Repetir', component: () => import('pages/Repetir.vue')},
   {path: '/personalizado', component: () => import('pages/personalizado.vue')},
+  {path: '/EstadoSaludCuestionario', component: () => import('pages/EstadoSaludCuestionario.vue')},
+  
 ]
 
 export default routes
