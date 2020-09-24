@@ -26,25 +26,32 @@
                   <q-icon name="alarm" />
                 </template>
                 <q-item>
-                  <q-item-section>
-                    <p class="text-subtitle1"> {{medicamento.nombre}} </p>
+                  <q-item-section @click="editarMedicamento(medicamento.id)">
+                    <p class="text-subtitle1"> {{medicamento.attributes.nombre}} </p>
                     <div class="q-subtitle-1">
-                      <span class="text-red-10 text-weight-bold">{{medicamento.vecesDia}}</span>
-                      <span > | {{medicamento.aplicar}}</span>
-                      <p >{{medicamento.tratamiento}} {{medicamento.hora}} {{medicamento.periodo}}</p>
+                      <span class="text-red-10 text-weight-bold">{{medicamento.attributes.cada}}
+                        <span v-if="medicamento.attributes.cada == 1"> vez al día</span>
+                        <span v-else> veces al día</span>
+                      </span>
+                      <span > | Por {{medicamento.attributes.duracion}}
+                        <span v-if="medicamento.attributes.duracion == 1"> día </span>
+                        <span v-else> días </span>
+                      </span>
+                      <p >Fecha inicio: {{medicamento.attributes.fecha_inicio}} </p>
+                      <p> Horario: {{medicamento.attributes.frecuencia}}</p>
                     </div>
                   </q-item-section>
                 </q-item>
               </q-slide-item>
             </q-list>
 
-              <!-- <div v-if="ListaMedicamentos == null || ListaMedicamentos.lenght == 0"
+              <div v-if="tam ==0"
                 class=" q-pa-md row items-center justify-around no-tasks absolute-center">
                 <q-icon class="items-center" name="check" size="100px" color="primary" />
                 <div class="text-h5 text-primary text-center">
                   No hay recordatorios
                 </div>
-              </div> -->
+              </div>
               <q-footer>
                 <Footer />
               </q-footer>
@@ -62,7 +69,8 @@ export default {
     data() {
       return {
         ListaMedicamentos: null,
-        DatosHistorial: null
+        DatosHistorial: null,
+        tam: 1,
       }
     },
     methods:{
@@ -70,7 +78,7 @@ export default {
           this.$router.go(-1)
         },
         AgregarMedicamento(){
-          this.$router.push('/NuevoRecordatorio')
+          this.$router.push('/NuevoRecordatorio/0')
         },
         onLeft ({ reset }) {
           this.$q.notify('Alarma desactivada')
@@ -87,16 +95,19 @@ export default {
         },
         obtenerMedicamentos(){    
           let idUsuario = JSON.parse(localStorage.getItem('id_usuario'))
-          axios.get("/users/"+idUsuario +"/historial").then((res) => {            
+          axios.get("/users/"+idUsuario +"/historial").then((res) => {             
             this.DatosHistorial = res.data.data;
+            console.log(this.DatosHistorial)
             localStorage.setItem('id_historial', JSON.parse(this.DatosHistorial.id))
             axios.get(this.DatosHistorial.relationships.medicamentos.links.related)
               .then((respuesta) => {
-                this.ListaMedicamentos = respuesta.data
-                console.log(this.ListaMedicamentos)
+                this.ListaMedicamentos = respuesta.data.data
+                this.tam = this.ListaMedicamentos.length
               })
-
           })
+        },
+        editarMedicamento(id){
+          this.$router.push("/NuevoRecordatorio/"+id)
         }
     },
     components: {

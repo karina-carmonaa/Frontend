@@ -75,13 +75,25 @@ export default {
             }  
           } 
         }).then((res) => {
-        this.$q.notify('Usuario guardado')
-        this.$router.go(-1)
+          console.log(res.data.data.id)
+          axios.post("/historials", {
+            data:{
+              type: "historials",
+              attributes: {
+                user_id: res.data.data.id
+              }
+            }
+          }).then((res2)=>{
+            axios.patch('/users/'+res.data.data.id+'/relationships/historial',{
+              data: {
+                type: "historials",
+                id: res.data.data.id
+              }
+            }) 
+          })
+          this.$q.notify('Usuario guardado')
+          this.$router.go(-1)
         });
-        this.telefono = ''
-        this.text = ''
-        this.genero = null
-        this.Fecha = ''
     },
     obtenerUsuario(){
       axios.get("/users/"+this.id).then((res) => {

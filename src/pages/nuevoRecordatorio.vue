@@ -5,10 +5,12 @@
               <q-toolbar>
                 <q-btn flat label="Cancelar" no-caps @click="atras" class="absolute-left"
                 />
-                <span class="q-subtitle-2 absolute-center ">
+                <span v-if="id == (0).toString()" class="q-subtitle-2 absolute-center ">
                   Agregar recordatorio
                 </span>
-                <q-btn flat label="Guardar" no-caps class="absolute-right"/>
+                <span v-else class="q-subtitle-2 absolute-center "> Editar recordatorio </span>
+                <q-btn flat label="Guardar" v-if="id == (0).toString() " @click="guardarMedicamento" no-caps class="absolute-right"/>
+                <q-btn flat label="Guardar" v-else @click="editarMedicamento" no-caps class="absolute-right"/>
               </q-toolbar>
             </q-header>
             <q-page-container class="row q-ma-lg">
@@ -93,6 +95,9 @@
 
 <script>
 import Footer from 'components/piePagina.vue'
+import axios from "axios";
+axios.defaults.baseURL = "http://agemed.test/api/v1";
+axios.defaults.headers = { "Content-Type": "application/vnd.api+json" };
 const diasOp = []
 const cantidad = []
 for (let i = 1; i <= 24; i++) {
@@ -102,21 +107,11 @@ for (let i = 1; i < 100; i++) {
   cantidad.push(i)
   
 }
+let idHistorial = JSON.parse(localStorage.getItem('id_historial'))
 export default {
     name: 'nuevoRecordatorio',
     data() {
       return {
-        medicamento: '',
-        horas: null,
-        frecuencia: null,
-        diasOp: diasOp,
-        cantidadDias: cantidad,
-        text: null,
-        duracion: null,
-        horarios: null,
-        Medidas: [ 'ml','mg'],
-        dosis: '',
-        repetir: true,
         horariosSugeridos3Horas: [
           { label: '7:00 am, 10:00 am, 1:00 pm, 4:00 pm, 7:00 pm', value: '7,10,13,16,19' },
           { label: '8:00 am, 11:00 am, 2:00 pm, 5:00 pm, 8:00 pm', value: '8,11,14,17,20' },
@@ -186,10 +181,23 @@ export default {
           { label: '11:00 am, 11:00 pm', value: '11,21' },
           { label: '12:00 am, 12:00 pm', value: '0,12' }
         ],
-        hora: '',
-        date: '',
-        dateInicio: '',
-        dateFin: '',
+        id: this.$route.params.id,
+        hora: null,
+        dateInicio: null,
+        dateFin: null,
+        medicamento: '',
+        horas: null,
+        frecuencia: null,
+        diasOp: diasOp,
+        cantidadDias: cantidad,
+        text: null,
+        duracion: null,
+        horarios: null,
+        Medidas: [ 'ml','mg'],
+        dosis: null,
+        repetir: true,
+        activar: "",
+        ResMedi: null
       }
     },
     methods:{
@@ -198,10 +206,75 @@ export default {
       },
       borrarHorarios(){
         this.horarios = null
-        console.log("hola")
       },
       fechaActual(){
         this.dateInicio = "2020-09-10"
+      },
+      guardarMedicamento(){
+        if(this.repetir == false){
+          this.activar = "0"
+        }else{
+          this.activar = "1"
+        }
+        axios.post("/medicamentos", {
+          data: {
+            type: "medicamentos",
+            attributes: {
+              historial_id: idHistorial,
+              nombre: this.medicamento,
+              dosis: this.dosis,
+              duracion: this.duracion,
+              fecha_inicio: this.dateInicio,
+              fecha_final: this.dateFin,
+              //frecuenciaHoras: this.horarios.value,
+              frecuencia: this.horarios.label,
+              cada: this.frecuencia,
+              hora: this.horas,
+              activar: this.activar
+            },
+          },
+        }).then((res) => {
+          this.$q.notify('Recordatorio guardado')
+          this.$router.go(-1)
+        });
+      },
+      obtenerMedicamento(){
+        axios.get("/medicamentos/"+this.id).then((respuesta) => {
+          this.ResMedi = respuesta.data.data.attributes
+          this.medicamento = this.ResMedi.nombre
+          this.dosis = this.ResMedi.dosis
+          this.duracion = this.ResMedi.duracion
+          this.dateInicio = this.ResMedi.fecha_inicio
+          this.dateFin = this.ResMedi.fecha_final
+          this.horarios = this.ResMedi.frecuencia
+          this.horas = this.ResMedi.hora
+          this.frecuencia = this.ResMedi.cada
+          this.activar = this.ResMedi.activar
+        })
+      },
+      editarMedicamento(){
+        console.log('1')
+        axios.patch("/medicamentos/"+this.id, {
+          data: {
+            type: "medicamentos",
+            id: this.id,
+            attributes: {
+              nombre: this.medicamento,
+              dosis: this.dosis,
+              duracion: this.duracion,
+              fecha_inicio: this.dateInicio,
+              fecha_final: this.dateFin,
+              //frecuenciaHoras: this.horarios.value,
+              frecuencia: this.horarios.label,
+              cada: this.frecuencia,
+              hora: this.horas,
+              activar: this.activar
+            },
+          },
+        }).then((res) => {
+          this.$q.notify('Recordatorio guardado')
+          this.$router.go(-1)
+        })
       }
     },
   components: {
@@ -209,6 +282,10 @@ export default {
   },
   mounted() {
     this.fechaActual(); 
+    if(this.id != 0){
+      this.obtenerMedicamento()
+    }
+
   }
 }
 </script>

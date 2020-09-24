@@ -1,7 +1,7 @@
 <template>
     <q-page class="bg-paginas">
        <div class="column col q-ma-sm q-mr-sm">
-          <div class="col text-center bg-transparent">
+          <div class="col text-center bg-transparent" style="display:none">
             <q-avatar size="56px" class="q-mb-sm">
               <img src="https://cdn.quasar.dev/img/boy-avatar.png">
             </q-avatar>
@@ -10,7 +10,7 @@
                @click="EditarPerfil()" color="black" label="Editar grupo" />
             </div>
           </div>
-            <div class=" col column q-pt-xl q-ml-md" >                
+            <div class=" col column q-pt-xl q-ml-md" > 
                 <div v-for="(item) in ListaUsuarios" :key="item.id">
                     <q-item>
                         <!-- <q-item-section avatar>
@@ -40,7 +40,7 @@
                         </q-item-section>
                     </q-item>
                 </div> 
-                <q-btn dense unelevated @click="MenuUsuario"> Karina</q-btn>
+               <!--  <q-btn dense unelevated @click="MenuUsuario"> Karina</q-btn> -->
             </div> 
     </div>
   </q-page>
@@ -81,12 +81,10 @@ export default {
     eliminarPerfil(id){
       axios.delete("/users/"+id).then((res) => {
         this.$q.notify('Usuario eliminado')
+        axios.get("/cuentas/1/users").then((res) => {
+          this.ListaUsuarios = res.data.data;
+        });
       })
-      this.ListaUsuarios = null
-      axios.get("/cuentas/1/users").then((res) => {
-        this.ListaUsuarios = res.data.data;
-        localStorage.setItem('id_cuenta', JSON.stringify(1))
-      });
     }
   },
   mounted() {
