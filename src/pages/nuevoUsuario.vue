@@ -22,11 +22,12 @@
             </q-avatar> -->
             <div class="q-gutter-y-md column">
               <q-input v-model="text" label="Nombre completo" stack-label :dense="dense" />
+              <q-input v-model="correo" type="email" label="Correo electrónico" stack-label />
               <q-input v-model="Fecha" type="date" transition-show="scale" transition-hide="scale"
                   mask="date" label="Fecha de nacimiento"  stack-label />
               <q-select v-model="genero" :options="OpcGenero" label="Género" stack-label :dense="dense"
                 transition-show="jump-up" transition-hide="jump-up"  />
-              <q-input v-model="telefono"  mask="(###) ### - ####" 
+              <q-input v-model="telefono"  mask="(###) ### - ####" stack-label
                 unmasked-value label="Télefono" :dense="dense" />
             </div>
           </div>
@@ -55,7 +56,8 @@ export default {
       genero: null,
       telefono: '',
       dense: false,
-      usuario: null
+      usuario: null,
+      correo: null
     }    
   },
   methods: {
@@ -70,6 +72,7 @@ export default {
               name: this.text,
               cuenta_id: 1,
               telefono: this.telefono,
+              email: this.correo,
               sexo: this.genero,
               fecha_nacimiento: this.Fecha
             }  
@@ -99,6 +102,7 @@ export default {
       axios.get("/users/"+this.id).then((res) => {
         this.usuario = res.data.data.attributes;
         this.text = this.usuario.name
+        this.correo = this.usuario.email
         this.telefono = this.usuario.telefono
         this.genero = this.usuario.sexo
         this.Fecha = this.usuario.fecha_nacimiento
@@ -111,6 +115,7 @@ export default {
           id: this.id,
           attributes: {
             name: this.text,
+            email: this.correo,
             cuenta_id: 1,
             telefono: this.telefono,
             sexo: this.genero,

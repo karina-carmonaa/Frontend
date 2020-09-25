@@ -1,17 +1,6 @@
 <template>
   <div class="column flex" :class="bgClass">
-    <template v-if="carga">  
-        <div class="col text-center q-pt-xl q-mt-xl">
-          <div>
-            <img fluid src="~assets/salud.png" class="fixed-center">
-          </div>
-        </div>
-        <div class="text-center absolute-bottom">
-          <img src="~assets/agemed.png">
-        </div>  
-      </template>
-      <template v-else>
-    <q-layout view="lHh Lpr lff" style="height: 300px" class="shadow-2 rounded-borders">
+    <q-layout view="lHh Lpr lff" class="shadow-2 rounded-borders">
             <q-header class="bg-cyan-8 q-px-sm q-pt-md q-mb-md">
               <q-toolbar>
                 <q-btn
@@ -34,7 +23,7 @@
               >
               <q-scroll-area style="height: calc(100% - 100px); margin-top: 100px; border-right: 1px solid #ddd">
                 <q-list padding>
-                  <q-item to="/" transition-show="jump-up" exact clickable v-ripple>
+                  <q-item to="/usuarios" transition-show="jump-up" exact clickable v-ripple>
                     <q-item-section avatar>
                       <q-icon name="person" />
                     </q-item-section>
@@ -76,7 +65,6 @@
               </div>
             </q-footer>
           </q-layout>
-      </template>
   </div>
 </template>
 
@@ -88,12 +76,6 @@ export default {
       leftDrawerOpen:false,
       carga: false
     }
-  },
-  beforeCreate() {
-    this.timer = setTimeout(() => {
-      this.carga=false
-      this.timer = void 0
-    }, 2000)
   },
   computed:{
     bgClass(){
