@@ -208,7 +208,13 @@ export default {
         this.horarios = null
       },
       fechaActual(){
-        this.dateInicio = "2020-09-10"
+        var d = new Date();
+        var dia = d.getUTCDate();
+        var mes =  ("0" + (d.getMonth() + 1)).slice(-2);
+        var año = d.getUTCFullYear();
+        console.log(dia + "/" + mes + "/" + año);
+        this.dateInicio = año + "-" + mes + "-" + dia; 
+        
       },
       guardarMedicamento(){
         if(this.repetir == false){

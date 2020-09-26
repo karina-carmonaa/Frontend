@@ -87,12 +87,12 @@ export default {
               }
             }
           }).then((res2)=>{
-            axios.patch('/users/'+res.data.data.id+'/relationships/historial',{
+/*             axios.patch('/users/'+res.data.data.id+'/relationships/historial',{
               data: {
                 type: "historials",
                 id: res.data.data.id
               }
-            }) 
+            })  */
           })
           this.$q.notify('Usuario guardado')
           this.$router.go(-1)
