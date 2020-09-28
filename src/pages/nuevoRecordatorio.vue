@@ -66,8 +66,8 @@
                       <br>
                     </div>
                   </div>
-                <q-select class="text-center" bottom-slots filled dense v-model="duracion"
-                :options="cantidadDias" transition-show="jump-up" transition-hide="jump-up">
+                <q-select @input="onChange" class="text-center" bottom-slots filled dense v-model="duracion "
+                :options="cantidadDias" transition-show="jump-up" transition-hide="jump-up" >
                   <template v-slot:before>
                     <p class="text-caption margen text-black ">Duración:</p>
                   </template> 
@@ -94,6 +94,7 @@
 </template>
 
 <script>
+import { date } from 'quasar'
 import Footer from 'components/piePagina.vue'
 import axios from "axios";
 axios.defaults.baseURL = "http://agemed.test/api/v1";
@@ -216,6 +217,15 @@ export default {
         this.dateInicio = año + "-" + mes + "-" + dia; 
         
       },
+      onChange: function(){
+         console.log(this.dateInicio)
+          this.dateFin="2020-05-20";
+          var fecha=this.dateInicio;          
+          fecha = date.addToDate(this.dateInicio, { days: this.duracion });
+          let formatoFecha = date.formatDate(fecha, 'YYYY-MM-DD')
+          console.log(formatoFecha);
+          this.dateFin=formatoFecha;
+      },
       guardarMedicamento(){
         if(this.repetir == false){
           this.activar = "0"
@@ -293,6 +303,7 @@ export default {
     }
 
   }
+  
 }
 </script>
 
