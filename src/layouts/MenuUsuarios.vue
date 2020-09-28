@@ -22,7 +22,7 @@
               >
               <q-scroll-area style="height: calc(100% - 100px); margin-top: 100px; border-right: 1px solid #ddd">
                 <q-list padding>
-                  <q-item to="/" transition-show="jump-up" exact clickable v-ripple>
+                  <q-item to="/usuarios" transition-show="jump-up" exact clickable v-ripple>
                     <q-item-section avatar>
                       <q-icon name="person" />
                     </q-item-section>
