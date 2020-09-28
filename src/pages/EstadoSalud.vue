@@ -20,7 +20,7 @@
                     <div>
                       <map name="image-map-1">                      
                                <area target="_parent" alt="HombroDer" title="HombroDer" href="#" coords="76,132,75,108,83,94,94,88,107,86,117,90,125,94,109,95,101,99,97,106,97,114" shape="poly">
-                                <area target="_parent" alt="HombroIzq" title="HombroIzq" href="#" coords="209,135,188,113,187,101,181,97,172,95,160,93,176,87,183,87,191,87,198,91,204,97,209,107,210,115" shape="poly">
+                                <area target="_parent" alt="HombroIzq" title="HombroIzq" @click="EstadoSaludCuestionario" coords="209,135,188,113,187,101,181,97,172,95,160,93,176,87,183,87,191,87,198,91,204,97,209,107,210,115" shape="poly">
                                 <area target="_parent" alt="ManoDer" title="ManoDer" href="#" coords="47,235,60,239,54,286,42,292,31,290,23,284,21,262" shape="poly">
                                 <area target="_parent" alt="ManoIzq" title="ManoIzq" href="#" coords="223,237,238,233,245,243,265,263,262,284,253,291,243,292,230,285" shape="poly">
                                 <area target="_parent" alt="RodillaDer" title="RodillaDer" href="#" coords="101,338,107,338,114,340,122,347,125,358,123,368,120,380,110,383,103,384,98,378" shape="poly">
@@ -30,9 +30,9 @@
                                 <area target="_parent" alt="CaderaDer" title="CaderaDer" href="#" coords="102,215,105,187,119,198,123,235" shape="poly">
                                 <area target="_parent" alt="CaderaIzq" title="CaderaIzq" href="#" coords="165,199,179,189,182,200,181,216,162,235" shape="poly">
                                 <area target="_parent" alt="Cuello" title="Cuello" href="#" coords="128,59,135,64,142,65,151,64,156,60,157,72,143,91,129,72" shape="poly">
-                                <area target="_parent" alt="Cabeza" title="Cabeza" @click="EstadoSaludCuestionario" coords="123,35,123,24,127,17,135,11,141,8,149,8,154,12,158,18,161,27,161,33,164,40,159,47,158,54,154,59,145,61,138,61,129,57,125,49,120,41" shape="poly">
+                                <area target="_parent" alt="Cabeza" title="Cabeza" href="#" coords="123,35,123,24,127,17,135,11,141,8,149,8,154,12,158,18,161,27,161,33,164,40,159,47,158,54,154,59,145,61,138,61,129,57,125,49,120,41" shape="poly">
                                 <area target="_parent" alt="CodoDer" title="CodoDer" href="#" coords="71,160,79,154,88,163,87,176,74,178,67,170" shape="poly">
-                                <area target="_blank" alt="CodoIzq" title="CodoIzq" href="#" coords="198,175,202,164,211,163,216,161,222,168,225,179,208,184,197,183" shape="poly">
+                                <area target="_parent" alt="CodoIzq" title="CodoIzq" href="#" coords="198,175,202,164,211,163,216,161,222,168,225,179,208,184,197,183" shape="poly">
                                 
                       </map>
                           <img src="~assets/body-delante.png" usemap="#image-map-1" alt="Mapa de imagen de ejemplo">

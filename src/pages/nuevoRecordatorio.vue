@@ -219,8 +219,7 @@ export default {
       },
       onChange: function(){
          console.log(this.dateInicio)
-          this.dateFin="2020-05-20";
-          var fecha=this.dateInicio;          
+          let fecha=this.dateInicio;          
           fecha = date.addToDate(this.dateInicio, { days: this.duracion });
           let formatoFecha = date.formatDate(fecha, 'YYYY-MM-DD')
           console.log(formatoFecha);
