@@ -22,7 +22,7 @@
             </q-avatar> -->
             <div class="q-gutter-y-md column">
               <q-input v-model="text" label="Nombre completo" stack-label :dense="dense" />
-              <q-input v-model="correo" type="email" label="Correo electrónico" stack-label />
+              <!-- <q-input v-model="correo" type="email" label="Correo electrónico" stack-label /> -->
               <q-input v-model="Fecha" type="date" transition-show="scale" transition-hide="scale"
                   mask="date" label="Fecha de nacimiento"  stack-label />
               <q-select v-model="genero" :options="OpcGenero" label="Género" stack-label :dense="dense"
@@ -42,6 +42,7 @@
 <script>
 import Footer from 'components/piePagina.vue'
 import axios from "axios";
+axios.defaults.withCredentials = true;
 axios.defaults.baseURL = "http://agemed.test/api/v1";
 axios.defaults.headers = { "Content-Type": "application/vnd.api+json" };
 export default {
@@ -57,7 +58,7 @@ export default {
       telefono: '',
       dense: false,
       usuario: null,
-      correo: null
+      correo: 'prueba@gmail.com'
     }    
   },
   methods: {

@@ -12,8 +12,10 @@
     "@quasar/extras": "^1.0.0",
     "@svg-maps/mexico": "^1.0.2",
     "axios": "^0.20.0",
+    "chart.js": "^2.9.4",
     "core-js": "^3.6.5",
     "quasar": "^1.0.0",
+    "vue-chartjs": "^3.5.1",
     "vue-svg-map": "^1.2.0"
   },
   "devDependencies": {

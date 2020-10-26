@@ -40,11 +40,6 @@ export default {
     bgClass(){
       return 'bg-inicio'
     }
-  },
-  methods:{
-    agregarUsuario(){
-      this.$router.push("/nuevoUsuario/0");
-    }
   }
 }
 </script>

@@ -3,8 +3,7 @@
     <div class="col q-pt-lg q-px-xl"></div>
     <div class="col text-center">
       <div class="q-gutter-y-md  q-px-xl">
-          <label class="text-h4" > Registro</label>
-        <q-input v-model="nombre" label="Nombre de usuario" />        
+          <label class="text-h4 text-weight-light" > Registro</label>     
         <q-input label="Correo electrónico" type="email" v-model="correo"/>
         <q-input v-model="contra" type='password' label="Contraseña">         
         </q-input>
@@ -34,7 +33,6 @@ export default {
     name: 'regristro',
     data() {
         return {
-            nombre: null,
             contra: null,
             isPwd: true,
             confirmacion: null,
@@ -52,12 +50,14 @@ export default {
             }
         },
         validar(){
-          if(this.nombre == null || this.contra == null || this.nombre == '' || this.contra == '' ||
+          if( this.contra == null || this.contra == '' ||
           this.correo == null || this.correo == ''){
             this.alert = true
           }else{
             this.alert = false
+            this.$router.push('/nuevoUsuario/0')
           }
+          
         },
         limpiar(){
           this.confirmacion = null

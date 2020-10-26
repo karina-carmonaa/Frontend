@@ -5,21 +5,21 @@
       <q-img src="~assets/salud.png" style="max-width: 300px; height: 150px;" contain ></q-img>
       <div class="q-gutter-y-md  q-px-xl">
         <form @submit.prevent="inicio">
-          <q-input v-model="form.nombre" label="Nombre de usuario">
+          <q-input v-model="email" label="Correo electrónico">
             <template v-slot:append>
               <q-icon name="person" />
             </template>
           </q-input>
-          <q-input v-model="form.contra" :type="isPwd ? 'password' : 'text'" label="Contraseña">
+          <q-input v-model="password" :type="isPwd ? 'password' : 'text'" label="Contraseña">
             <template v-slot:append>
               <q-icon :name="isPwd ? 'visibility_off' : 'visibility'"
                 class="cursor-pointer" @click="isPwd = !isPwd" />
             </template>
           </q-input>
-          <span @click="inicio" class="text-right text-grey-9" to="/usuarios" flat :ripple="false" 
+          <span class="text-right text-grey-9" to="/usuarios" flat :ripple="false" 
             no-caps no-wrap >¿Olvidaste tu contraseña? </span>
           <br> <br>
-          <q-btn label="Iniciar" class="full-width" rounded @click="inicio" color="blue"/>
+          <q-btn label="Iniciar" type="iniciar" class="full-width" rounded color="blue"/>
           </form>
           <div class="q-pt-xl text-center text-grey-9">
             <span class="text-center"> ¿No tienes una cuenta?
@@ -32,28 +32,28 @@
 </template>
 
 <script>
-import axios from "axios";
-axios.defaults.withCredentials = true;
-axios.defaults.baseURL = "http://agemed.test/api/v1";
-axios.defaults.headers = { "Content-Type": "application/vnd.api+json" };
+import apiClient from '../service/api.js';
 export default {
     name: 'login',
     data() {
         return {
-          form: {
-            nombre: 'karina',
-            contra: '123',
-            email: 'karina@ejemplo'
-          },
+            email: 'karina2@ejemplo.com',
+            password: '123',
             isPwd: true
         }
     },
     methods: {
       inicio(){
-        axios.post("/cuentas",this.form).then((res)=> {
-          console.log(res)
-        })
-        console.log(this.form)
+        this.$router.push('/usuarios')
+        /* apiClient.get('/sanctum/csrf-cookie')
+          .then(response => {
+              apiClient.post('/login' , {
+                    email: this.email,
+                    password: this.password
+              }).then(response => {
+                  console.log(response)
+              })
+          }); */
       }
     }
 }

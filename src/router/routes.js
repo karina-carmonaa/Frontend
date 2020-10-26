@@ -47,6 +47,7 @@ const routes = [
   {path: '/Repetir', component: () => import('pages/Repetir.vue')},
   {path: '/personalizado', component: () => import('pages/personalizado.vue')},
   {path: '/EstadoSaludCuestionario', component: () => import('pages/EstadoSaludCuestionario.vue')},
+  {path: '/seguimientoGraficas', component: () => import('pages/seguimientoSaludGraficas.vue')},
   
 ]
 
