@@ -82,7 +82,7 @@
                 <q-input v-model="dateFin" filled type="date" transition-show="scale" transition-hide="scale"
                   mask="date" label="Fecha final" today  stack-label input-class="text-center" />
                   <br>
-                <q-toggle v-model="repetir" label="Activar recordatorio" size="sm" left-label class="text-subtitle1 float-right" />
+                <q-toggle v-model="repetir" label="Activar recordatorio" size="lg" left-label class="text-subtitle1 float-right" icon="alarm" color="red" />
               </div>
               
               <q-footer>
@@ -215,7 +215,6 @@ export default {
         var año = d.getUTCFullYear();
         console.log(dia + "/" + mes + "/" + año);
         this.dateInicio = año + "-" + mes + "-" + dia; 
-        
       },
       onChange: function(){
          console.log(this.dateInicio)

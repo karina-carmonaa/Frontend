@@ -12,12 +12,15 @@
     "@quasar/extras": "^1.0.0",
     "@svg-maps/mexico": "^1.0.2",
     "axios": "^0.20.0",
+    "bootstrap-vue": "^2.18.1",
     "core-js": "^3.6.5",
+    "google-maps": "^4.3.3",
     "quasar": "^1.0.0",
-    "vue-svg-map": "^1.2.0"
+    "vue-svg-map": "^1.2.0",
+    "vue2-google-maps": "^0.10.7"
   },
   "devDependencies": {
-    "@quasar/app": "^2.0.0"
+    "@quasar/app": "^2.1.5"
   },
   "browserslist": [
     "last 10 Chrome versions",
