@@ -40,7 +40,7 @@
                         </q-item-section>
                     </q-item>
                 </div> 
-               <!--  <q-btn dense unelevated @click="MenuUsuario"> Karina</q-btn> -->
+                <q-btn dense unelevated @click="MenuUsuario"> Karina</q-btn>
             </div> 
     </div>
   </q-page>
@@ -48,13 +48,9 @@
 
 <script>
 import { LocalStorage, SessionStorage } from 'quasar'
-
-import axios from "axios";
-// axios.defaults.withCredentials = true;
-axios.defaults.baseURL = "http://agemed.test/api/v1";
-axios.defaults.headers = { "Content-Type": "application/vnd.api+json" };
+import apiClient from '../service/api.js';
 export default {
-  name: "usuarios",
+  name: "usuarios", 
   data() {
     return {
       show: true,
@@ -70,7 +66,7 @@ export default {
       this.$router.push("/menuUsuario");
     },
     obtenerUsuarios() {
-      axios.get("/cuentas/1/users").then((res) => {
+      apiClient.get("/api/v1/cuentas/1/users").then((res) => {
         this.ListaUsuarios = res.data.data;
         localStorage.setItem('id_cuenta', JSON.stringify(1))
       });
@@ -79,9 +75,9 @@ export default {
       this.$router.push("/nuevoUsuario/"+id)
     },
     eliminarPerfil(id){
-      axios.delete("/users/"+id).then((res) => {
+      apiClient.delete("/api/v1/users/"+id).then((res) => {
         this.$q.notify('Usuario eliminado')
-        axios.get("/cuentas/1/users").then((res) => {
+        apiClient.get("/api/v1/cuentas/1/users").then((res) => {
           this.ListaUsuarios = res.data.data;
         });
       })

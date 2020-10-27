@@ -45,7 +45,7 @@
                       <span v-if=" diaSemana.done">  
                         <span> {{diaSemana.label}}, </span> 
                       </span>
-                    </span> 
+                    </span> de
                   </span>
 
                   <span v-if="model.value === 4 && MesAnio.length != 0">  en                  
@@ -173,7 +173,7 @@ export default {
       return {
         dias: null,
         model: null,
-        diaMesEl: null,
+        diaMesEl: {label: 'martes', done: true},
         diaSemana: ["domingo"],
         doneCada:true,
         MesesSelec: [
@@ -186,7 +186,7 @@ export default {
         ],
         MesAnio: ['Ene'],
         doneEl: false,
-        NumOrdinal: null,
+        NumOrdinal: {label: 'primer', done:true},
         diaMesSelec: ["01"],
         diasOp: diasOp,
         diaMes: diaMes,
@@ -214,9 +214,10 @@ export default {
         ]
       }
     },
-    methods:{
+    methods:{     
         atras(){
-            this.$router.go(-1)
+          
+          this.$router.go(-1)
         },
         cambiarCheck(index){
           if(index==1){
