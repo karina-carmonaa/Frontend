@@ -55,24 +55,24 @@
                   </template>
                 </q-input>
                 <div class="q-ml-xl q-mr-xl q-pl-md q-pr-md">
-                  <q-btn class="full-width" label="Guardar" no-caps rounded unelevated color="secondary" />
+                  <q-btn class="full-width" label="Guardar" @click="guardarMediciones" no-caps rounded unelevated color="secondary" />
                 </div>
               </div>
               <div class="text-center q-mt-md column">
                 <p class="text-h6 text-black">Medidas recientes</p>
               </div><!-- v-for="medida in ListaMedidas" :key="medida" -->
-              <q-list bordered separator dense class="col-12" >
+              <q-list bordered padding separator dense class="col-12" v-for="(datos, index) in DatosResultado" :key="index" >
                 <q-slide-item class="bg-grey-5" left-color="red" >
                   <q-item clickable v-ripple >
                     <q-item-section class="col-2">
                       <q-icon name="accessibility_new" size="xl"/>
                     </q-item-section>
                   <q-item-section >
-                    <q-item-label lines="1">Peso</q-item-label>
-                    <q-item-label caption> 89.56  <span> kg </span></q-item-label>
+                    <q-item-label lines="1">{{datos.nombre}}</q-item-label>
+                    <q-item-label caption> {{datos.numero}}  <span> {{datos.medida}} </span></q-item-label>
                   </q-item-section>
                   <q-item-section side>
-                    <q-item-label> 12 feb <span>
+                    <q-item-label> {{datos.fecha}} <span>
                       <q-icon name="keyboard_arrow_right" size="xs" />                    
                     </span></q-item-label>
                   </q-item-section>
@@ -95,6 +95,7 @@
 <script>
 import Footer from 'components/piePagina.vue'
 import { date } from 'quasar'
+import apiClient from '../service/api.js';
 export default {
     name: 'seguimientoSalud',
     data() {
@@ -105,7 +106,10 @@ export default {
         estatura: null,
         ListaMedidas: null,
         imc: null,
-        fecha: null
+        fecha: null,
+        temperatura: null,
+        RespuestaApi: null,
+        DatosResultado: [{nombre: "Peso", numero: 98.2, medida: "kg", fecha: "12 feb"}]
       }
     },
     methods:{
@@ -128,13 +132,67 @@ export default {
         }
         var mes =  ("0" + (d.getMonth() + 1)).slice(-2);
         var año = d.getUTCFullYear();
-        console.log(dia + "/" + mes + "/" + año);
-        this.fecha = año + "-" + mes + "-" + dia; 
+        this.fecha = dia + "-" + mes + "-" + año; 
         
+      },
+      guardarMediciones(){
+        if(this.estatura == null && this.imc == null && this.peso == null && this.TensionArterial == null
+        && this.azucar == null){
+          
+        } else{
+          apiClient.post("/api/v1/medicions", {
+            data: {
+              type: "medicions",
+              attributes:{
+                user_id: JSON.parse(localStorage.getItem('id_usuario')),
+                altura: this.estatura,
+                imc: this.imc,
+                peso: this.peso,
+                presion_arterial: this.TensionArterial,
+                azucar: this.azucar
+              }
+            }
+          }).then(() => {
+              this.$q.notify('Mediciones guardadas'),
+              this.TensionArterial = null, this.estatura = null,
+              this.imc = null, this.peso = null, this.azucar = null
+          })
+        }
+      },
+      Datos(){
+        apiClient.get("/api/v1/medicions?filter[user_id]=1").then((res) => {
+          //this.DatosResultado = res.data.data[1].attributes.altura
+          this.RespuestaApi = res.data.data
+          for (let i = 0; i < this.RespuestaApi.length; i++) {
+            let fechaCreated = this.RespuestaApi[i].attributes.created_at;
+            console.log(fechaCreated)
+            if(this.RespuestaApi[i].attributes.altura != null){
+              this.DatosResultado.push({nombre: "Altura", numero: this.RespuestaApi[i].attributes.altura,
+              medida: "m", fecha: this.RespuestaApi[i].attributes.updated})
+            }
+            if(this.RespuestaApi[i].attributes.imc != null){
+              this.DatosResultado.push({nombre: "IMC", numero: this.RespuestaApi[i].attributes.imc,
+              medida: " ", fecha: this.RespuestaApi[i].attributes.created})
+            }
+            if(this.RespuestaApi[i].attributes.peso != null){
+              this.DatosResultado.push({nombre: "Peso", numero: this.RespuestaApi[i].attributes.peso,
+              medida: "kg", fecha: this.RespuestaApi[i].attributes.created})
+            }
+            if(this.RespuestaApi[i].attributes.presion_arterial != null){
+              this.DatosResultado.push({nombre: "Presión arterial", numero: this.RespuestaApi[i].attributes.presion_arterial,
+              medida: " ", fecha: this.RespuestaApi[i].attributes.created})
+            }
+            if(this.RespuestaApi[i].attributes.azucar != null){
+              this.DatosResultado.push({nombre: "Azucar", numero: this.RespuestaApi[i].attributes.azucar,
+              medida: " ", fecha: this.RespuestaApi[i].attributes.created})
+            }            
+          }
+        })
       },
     },
     mounted() {
-      this.fechaActual()
+      this.fechaActual();
+      this.Datos();
     },
   components: {
     Footer

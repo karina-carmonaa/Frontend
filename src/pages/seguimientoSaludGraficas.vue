@@ -17,7 +17,7 @@
             </q-header>
             <q-page-container class="row q-ma-lg">
               <div class="text-center column">
-              
+                <line-chart v-if="cargado" :chartdata="chartData" :options="options" />
               </div>                      
               <q-footer>
                 <Footer />
@@ -29,15 +29,24 @@
 
 <script>
 import Footer from 'components/piePagina.vue'
-import { Bar } from 'vue-chartjs'
+import LineChart from 'components/LineChart.vue'
+import apiClient from '../service/api.js';
 export default {
     name: 'seguimientoSaludGraficas',
-    extends: Bar,
     mounted(){
-      this.renderChart(data, options)
+      this.cargado = false;
+      try {
+        
+        this.loaded = true
+      } catch (e){
+        console.log(e)
+      }
     },
     data() {
       return {
+        cargado: false,
+        chartData: null,
+        options: {responsive: true}
       }
     },
     methods:{
@@ -49,7 +58,7 @@ export default {
       }
     },
   components: {
-    Footer
+    Footer, LineChart
   }
 }
 </script>

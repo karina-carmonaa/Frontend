@@ -79,7 +79,6 @@ export default {
             }  
           } 
         }).then((res) => {
-          console.log(res.data.data.id)
           axios.post("/historials", {
             data:{
               type: "historials",
