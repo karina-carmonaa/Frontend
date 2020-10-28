@@ -70,63 +70,39 @@
                Usted tiene..
                <!-- HombroDer =1   -->
               <div v-if="idCuestionario == '1'" class="q-pa-md" id="EstadoSaludCuestionario">
-                  <div class="q-gutter-sm">
-                      <q-checkbox  indeterminate-value="false" v-model="pre1" label="¿Intenso dolor?" />
-                    </div>
-                    <div class="q-gutter-sm">
-                      <q-checkbox indeterminate-value="maybe" v-model="pre2" label="¿Inflamación del hombro?" />
-                    </div>
-                    <div class="q-gutter-sm">
-                      <q-checkbox indeterminate-value="maybe" v-model="pre3" label="¿Sensibilidad extrema en la zona del hombro?" />
-                    </div>
-                    <div class="q-gutter-sm">
-                      <q-checkbox indeterminate-value="maybe" v-model="pre4" label="¿Deformidad debajo de la piel?" />
-                    </div>
-                    <div class="q-gutter-sm">
-                      <q-checkbox indeterminate-value="maybe" v-model="pre5" label="¿Coloración violácea o decoloración de la piel?" />
-                    </div>
-                    <div class="q-gutter-sm">
-                      <q-checkbox indeterminate-value="maybe" v-model="pre6" label="¿Crujidos?" />
-                    </div>
-                    <div class="q-gutter-sm">
-                      <q-checkbox indeterminate-value="maybe" v-model="pre7" label="¿Incapacidad de mover el brazo sin experimentar dolor?" />
+                  <div class="q-gutter-xs">
+                      <q-checkbox indeterminate-value="maybe" v-model="pregunta1" val="1" label="¿Intenso dolor? 1" />
+                      <q-checkbox indeterminate-value="maybe" v-model="pregunta1" val="2" label="¿Inflamación del hombro? " />
+                      <q-checkbox indeterminate-value="maybe" v-model="pregunta1" val="3" label="¿Sensibilidad extrema en la zona del hombro? " />
+                      <q-checkbox indeterminate-value="maybe" v-model="pregunta1" val="4" label="¿Deformidad debajo de la piel? " />
+                      <q-checkbox indeterminate-value="maybe" v-model="pregunta1" val="5" label="¿Coloración violácea o decoloración de la piel?" />
+                      <q-checkbox indeterminate-value="maybe" v-model="pregunta1" val="6" label="¿Crujidos?" />
+                      <q-checkbox indeterminate-value="maybe" v-model="pregunta1" val="7" label="¿Incapacidad de mover el brazo sin experimentar dolor?" />
                   </div>
                 
                 <br>
                 <div class="q-px-sm">
                  
                    <br>
-                  The model data: <strong>{{ JSON.stringify(pre1) }}</strong>
+                  preguntas seleccionadas {{pregunta1}}
                 </div>
                  <br>
                  <div >
                       <p> Total: {{total}}</p>
                  </div>
-                <q-btn color="primary" label="Enviar" />               
+                <q-btn color="primary" label="Enviar" @click="enviar"/>               
               </div>
 
             <!--  HombroIzq =2    -->
             <div v-if="idCuestionario == '2'" class="q-pa-md">
                 
                 <div class="q-gutter-sm">
-                  <q-checkbox  indeterminate-value="false" v-model="pre1" label="¿Intenso dolor?" @click="suma(1)" />
-                </div>
-                <div class="q-gutter-sm">
+                  <q-checkbox  indeterminate-value="false" v-model="pre1" label="¿Intenso dolor? 2" v-on:Change="suma(1)" />
                   <q-checkbox indeterminate-value="maybe" v-model="pre2" label="¿Inflamación del hombro?" @checked="suma(2)" />
-                </div>
-                <div class="q-gutter-sm">
                   <q-checkbox indeterminate-value="maybe" v-model="pregunta" label="¿Sensibilidad extrema en la zona del hombro?"  val="1" v-on:click="suma(2)"/>
-                </div>
-                <div class="q-gutter-sm">
                   <q-checkbox indeterminate-value="maybe" v-model="pregunta" label="¿Deformidad debajo de la piel?"  val="2"/>
-                </div>
-                <div class="q-gutter-sm">
                   <q-checkbox indeterminate-value="maybe" v-model="pregunta" label="¿Coloración violácea o decoloración de la piel?" />
-                </div>
-                <div class="q-gutter-sm">
                   <q-checkbox indeterminate-value="maybe" v-model="pregunta" label="¿Crujidos?" />
-                </div>
-                <div class="q-gutter-sm">
                   <q-checkbox indeterminate-value="maybe" v-model="pregunta" label="¿Incapacidad de mover el brazo sin experimentar dolor?" />
                 </div>
                 <br>
@@ -154,7 +130,8 @@ export default {
     data() {
       return {
         idCuestionario: this.$route.params.id,
-        pregunta:[],
+        pregunta:['algo'],
+        pregunta1: [],
         pre1:null,
         pre2:null,
         pre3:null,
@@ -176,8 +153,14 @@ export default {
       }
     },
     methods:{
+      enviar(){
+        this.total = 0
+        for (let i = 0; i < this.pregunta1.length; i++) {
+          this.total +=  parseInt(this.pregunta1[i])         
+        }
+      },
         atras(){
-            this.$router.push("/EstadoSalud");
+            this.$router.go(-1)
         },
          Recomendacion(){
             this.$router.push('/EstadoSaludRecomendacion')
@@ -203,13 +186,11 @@ export default {
               
     },
      computed: {
-    algo(){
-      console.log("entre algo")
-      this.total=this.total+ this.pregunta.values
-      return this.total
-    },
-         
-     
+      algo(){
+        console.log("entre algo")
+        this.total=this.total+ this.pregunta.values
+        return this.total
+      },    
    },
   components: {
     Footer
