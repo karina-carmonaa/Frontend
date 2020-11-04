@@ -2,7 +2,7 @@
 import { Line } from 'vue-chartjs'
 
 export default {
-    extends: Line,
+    mixins: [Line],
     props: {
         chartData: {
             type: Object,

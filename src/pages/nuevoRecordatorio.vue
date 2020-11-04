@@ -270,7 +270,6 @@ export default {
         })
       },
       editarMedicamento(){
-        console.log('1')
         apiClient.patch("/api/v1/medicamentos/"+this.id, {
           data: {
             type: "medicamentos",
