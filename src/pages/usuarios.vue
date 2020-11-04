@@ -1,7 +1,7 @@
 <template>
     <q-page class="bg-paginas">
        <div class="column col q-ma-sm q-mr-sm">
-          <div class="col text-center bg-transparent" style="display:none">
+          <!-- <div class="col text-center bg-transparent" style="display:none">
             <q-avatar size="56px" class="q-mb-sm">
               <img src="https://cdn.quasar.dev/img/boy-avatar.png">
             </q-avatar>
@@ -9,7 +9,7 @@
             <div class="q-pt-xs"><q-btn size="xs" class="bg-btn" unelevated rounded 
                @click="EditarPerfil()" color="black" label="Editar grupo" />
             </div>
-          </div>
+          </div> -->
             <div class=" col column q-pt-xl q-ml-md" > 
                 <div v-for="(item) in ListaUsuarios" :key="item.id">
                     <q-item>
@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import { LocalStorage, SessionStorage } from 'quasar'
+import { LocalStorage } from 'quasar'
 import apiClient from '../service/api.js';
 export default {
   name: "usuarios", 

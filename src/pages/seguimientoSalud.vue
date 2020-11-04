@@ -12,7 +12,7 @@
                 <span class="q-subtitle-1 absolute-center ">
                   Seguimiento de salud
                 </span>
-                <q-btn flat label="Recordar" no-caps @click="Recordatorio" class="absolute-right"/>
+                <!-- <q-btn flat label="Recordar" no-caps @click="Recordatorio" class="absolute-right"/> -->
               </q-toolbar>
             </q-header>
             <q-page-container class="row q-ma-lg">
@@ -62,8 +62,8 @@
                 <p class="text-h6 text-black">Medidas recientes</p>
               </div><!-- v-for="medida in ListaMedidas" :key="medida" -->
               <q-list bordered padding separator dense class="col-12" v-for="(datos, index) in DatosResultado" :key="index" >
-                <q-slide-item class="bg-grey-5" left-color="red" >
-                  <q-item clickable v-ripple >
+                <q-slide-item class="bg-grey-6">
+                  <q-item clickable v-ripple @click="activarDialog(datos)" >
                     <q-item-section class="col-2">
                       <q-icon name="accessibility_new" size="xl"/>
                     </q-item-section>
@@ -79,6 +79,20 @@
                 </q-item>
                 </q-slide-item>
               </q-list>      
+              <q-dialog v-model="dialog" persistent>
+                <q-card>
+                  <q-card-section class="row items-center">
+                    <q-avatar icon="accessibility_new" color="primary" text-color="white" />
+                    <span class="q-ml-sm">{{popup.nombre}} - {{ popup.numero}} {{popup.medida}} </span> 
+                  </q-card-section>
+
+                  <!-- Notice v-close-popup -->
+                  <q-card-actions align="right">
+                    <q-btn flat label="Cancelar" color="primary" v-close-popup/>
+                    <q-btn flat label="Eliminar" color="red" v-close-popup @click="elimanarDatos" />
+                  </q-card-actions>
+                </q-card>
+              </q-dialog>
               <div class="row justify-center col-12 q-pt-md">
                 <q-btn label="Historial y gráficas" no-caps unelevated rounded padding="8px 60px" 
                 @click="graficas" color="secondary" />
@@ -100,6 +114,7 @@ export default {
     name: 'seguimientoSalud',
     data() {
       return {
+        dialog: false,
         TensionArterial: null,
         azucar: null,
         peso: null,
@@ -109,7 +124,8 @@ export default {
         fecha: null,
         temperatura: null,
         RespuestaApi: null,
-        DatosResultado: [{nombre: "Peso", numero: 98.2, medida: "kg", fecha: "12 feb"}]
+        DatosResultado: [],
+        popup: [],
       }
     },
     methods:{
@@ -118,6 +134,109 @@ export default {
       },
       Recordatorio(){
       },
+      //eliminar la medida
+      activarDialog(datos){
+        this.popup = datos
+        //me permite mostrar el dialogo
+        this.dialog= true;
+      },
+      elimanarDatos(){      
+        if (this.popup.nombre == "Peso") { 
+          apiClient.patch("/api/v1/medicions/"+this.popup.id,{
+          data: {
+            type: "medicions",
+            id: this.popup.id,
+            attributes: {
+              peso : null
+            }
+          }
+        }).then((res) => {
+          this.$q.notify({
+            message: 'Medición eliminada',
+            color: primary
+          })
+          let respuesta = res.data.data.attributes
+          if (respuesta.peso == null && respuesta.altura == null && respuesta.imc == null && 
+              respuesta.presion_arterial == null && respuesta.azucar == null) {
+            apiClient.delete('/api/v1/medicions/'+this.popup.id)            
+          }
+          this.Datos();
+        })
+        } else if (this.popup.nombre == "Altura") { 
+          apiClient.patch("/api/v1/medicions/"+this.popup.id,{
+          data: {
+            type: "medicions",
+            id: this.popup.id,
+            attributes: {
+              altura : null
+            }
+          }
+        }).then((res) => {
+          this.$q.notify('Medición eliminada')
+          let respuesta = res.data.data.attributes
+          if (respuesta.peso == null && respuesta.altura == null && respuesta.imc == null && 
+                  respuesta.presion_arterial == null && respuesta.azucar == null) {
+            apiClient.delete('/api/v1/medicions/'+this.popup.id)            
+          }
+          this.Datos();
+        })
+        } else if (this.popup.nombre == "IMC") { 
+          apiClient.patch("/api/v1/medicions/"+this.popup.id,{
+          data: {
+            type: "medicions",
+            id: this.popup.id,
+            attributes: {
+              imc : null
+            }
+          }
+        }).then((res) => {
+          this.$q.notify('Medición eliminada')
+          let respuesta = res.data.data.attributes
+          if (respuesta.peso == null && respuesta.altura == null && respuesta.imc == null && 
+                  respuesta.presion_arterial == null && respuesta.azucar == null) {
+            apiClient.delete('/api/v1/medicions/'+this.popup.id)            
+          }
+          this.Datos();
+        })
+        } else if (this.popup.nombre == "Presión arterial") { 
+          apiClient.patch("/api/v1/medicions/"+this.popup.id,{
+          data: {
+            type: "medicions",
+            id: this.popup.id,
+            attributes: {
+              presion_arterial : null
+            }
+          }
+        }).then((res) => {
+          this.$q.notify('Medición eliminada')
+          let respuesta = res.data.data.attributes
+          if (respuesta.peso == null && respuesta.altura == null && respuesta.imc == null && 
+                  respuesta.presion_arterial == null && respuesta.azucar == null) {
+            apiClient.delete('/api/v1/medicions/'+this.popup.id)            
+          }
+          this.Datos();
+        })
+        }  else if (this.popup.nombre == "Azúcar") { 
+          apiClient.patch("/api/v1/medicions/"+this.popup.id,{
+          data: {
+            type: "medicions",
+            id: this.popup.id,
+            attributes: {
+              azucar : null
+            }
+          }
+        }).then((res) => {
+          this.$q.notify('Medición eliminada')
+          let respuesta = res.data.data.attributes
+          if (respuesta.peso == null && respuesta.altura == null && respuesta.imc == null && 
+                  respuesta.presion_arterial == null && respuesta.azucar == null) {
+            apiClient.delete('/api/v1/medicions/'+this.popup.id)            
+          }
+          this.Datos();
+        })
+        }  
+
+      },
       calcularIMC(){
         this.imc = (this.peso / ((this.estatura)*(this.estatura))).toFixed(2)
       },
@@ -125,25 +244,19 @@ export default {
         this.$router.push("/seguimientoGraficas");
       },
       fechaActual(){
-        var d = new Date();
-        var dia = d.getUTCDate();
-        if (dia < 10){
-          dia = "0"+dia
-        }
-        var mes =  ("0" + (d.getMonth() + 1)).slice(-2);
-        var año = d.getUTCFullYear();
-        this.fecha = dia + "-" + mes + "-" + año; 
-        
+        let [month, date, year]    = ( new Date() ).toLocaleDateString().split("/")
+        if(month.length == 1){ month = "0"+month }
+        if(date.length == 1){ date = "0"+date }
+        this.fecha = month + "-" + date + "-" + year;         
       },
       guardarMediciones(){
-        if(this.estatura == null && this.imc == null && this.peso == null && this.TensionArterial == null
-        && this.azucar == null){
-          
-        } else{
+        if(this.estatura != null || this.imc != null || this.peso != null || this.TensionArterial != null
+            || this.azucar != null){
           apiClient.post("/api/v1/medicions", {
             data: {
               type: "medicions",
               attributes:{
+                //obtenemos el id que esta guardado en el localstorage
                 user_id: JSON.parse(localStorage.getItem('id_usuario')),
                 altura: this.estatura,
                 imc: this.imc,
@@ -156,40 +269,48 @@ export default {
               this.$q.notify('Mediciones guardadas'),
               this.TensionArterial = null, this.estatura = null,
               this.imc = null, this.peso = null, this.azucar = null
+              this.Datos();
           })
         }
       },
       Datos(){
-        apiClient.get("/api/v1/medicions?filter[user_id]=1").then((res) => {
-          //this.DatosResultado = res.data.data[1].attributes.altura
+        this.DatosResultado = [];
+        //opciones de como queremos mostrar la feche
+        let options = { month: "short", day: "numeric"};
+        let idUser = JSON.parse(localStorage.getItem('id_usuario'));
+        //filtro para encontrar todas las mediciones segun el id del usuario
+        apiClient.get("/api/v1/medicions?filter[user_id]="+idUser).then((res) => {
+          //almacenamos las respuestas en el array RespuestasApi
           this.RespuestaApi = res.data.data
           for (let i = 0; i < this.RespuestaApi.length; i++) {
-            let fechaCreated = this.RespuestaApi[i].attributes.created_at;
-            console.log(fechaCreated)
+            let fechaCreated = new Date(this.RespuestaApi[i].attributes.created_at).toLocaleDateString("es-MX", options)
+            //acomodamos las respeuestas para mostrarlas en ese orden, sino tiene valor esa columna se pasa a la siguiente de la fila
+            // y todo se almacena en el array DatosResultado
             if(this.RespuestaApi[i].attributes.altura != null){
               this.DatosResultado.push({nombre: "Altura", numero: this.RespuestaApi[i].attributes.altura,
-              medida: "m", fecha: this.RespuestaApi[i].attributes.updated})
+              medida: "m", fecha: fechaCreated, id: this.RespuestaApi[i].id})
             }
             if(this.RespuestaApi[i].attributes.imc != null){
               this.DatosResultado.push({nombre: "IMC", numero: this.RespuestaApi[i].attributes.imc,
-              medida: " ", fecha: this.RespuestaApi[i].attributes.created})
+              medida: " ", fecha: fechaCreated, id: this.RespuestaApi[i].id})
             }
             if(this.RespuestaApi[i].attributes.peso != null){
               this.DatosResultado.push({nombre: "Peso", numero: this.RespuestaApi[i].attributes.peso,
-              medida: "kg", fecha: this.RespuestaApi[i].attributes.created})
+              medida: "kg", fecha: fechaCreated, id: this.RespuestaApi[i].id})
             }
             if(this.RespuestaApi[i].attributes.presion_arterial != null){
               this.DatosResultado.push({nombre: "Presión arterial", numero: this.RespuestaApi[i].attributes.presion_arterial,
-              medida: " ", fecha: this.RespuestaApi[i].attributes.created})
+              medida: " ", fecha: fechaCreated, id: this.RespuestaApi[i].id})
             }
             if(this.RespuestaApi[i].attributes.azucar != null){
-              this.DatosResultado.push({nombre: "Azucar", numero: this.RespuestaApi[i].attributes.azucar,
-              medida: " ", fecha: this.RespuestaApi[i].attributes.created})
+              this.DatosResultado.push({nombre: "Azúcar", numero: this.RespuestaApi[i].attributes.azucar,
+              medida: " ", fecha: fechaCreated, id: this.RespuestaApi[i].id})
             }            
           }
         })
       },
     },
+    //se cargan los datos y la fecha antes de cargar con la página completa, para mostrar mejor los resultados
     mounted() {
       this.fechaActual();
       this.Datos();
