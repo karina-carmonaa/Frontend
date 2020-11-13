@@ -27,10 +27,8 @@
                 {{datos.numero}}  <span> {{datos.medida}} </span>
               </q-item-label>
             </q-item-section>
-            <q-item-section top side>
-              <div class="text-grey-8">
-                <q-btn size="15px" flat dense round icon="delete" @click="eliminar(datos)" />
-              </div>
+            <q-item-section side top>
+              <q-btn size="15px" flat dense round color="grey-8" icon="delete" @click="eliminar(datos)" />
             </q-item-section>
           </q-item>
         </q-list>      

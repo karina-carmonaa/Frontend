@@ -238,7 +238,9 @@ export default {
 
       },
       calcularIMC(){
-        this.imc = (this.peso / ((this.estatura)*(this.estatura))).toFixed(2)
+        if(this.peso != null && this.estatura != null){
+          this.imc = (this.peso / ((this.estatura)*(this.estatura))).toFixed(2)
+        }
       },
       graficas(){
         this.$router.push("/seguimientoGraficas");

@@ -1,47 +1,32 @@
 <template>
-    <q-page class="bg-paginas">
-       <div class="column col q-ma-sm q-mr-sm">
-          <!-- <div class="col text-center bg-transparent" style="display:none">
-            <q-avatar size="56px" class="q-mb-sm">
-              <img src="https://cdn.quasar.dev/img/boy-avatar.png">
-            </q-avatar>
-            <div class="text-weight-bold">Nombre del grupo</div>
-            <div class="q-pt-xs"><q-btn size="xs" class="bg-btn" unelevated rounded 
-               @click="EditarPerfil()" color="black" label="Editar grupo" />
-            </div>
-          </div> -->
-            <div class=" col column q-pt-xl q-ml-md" > 
-                <div v-for="(item) in ListaUsuarios" :key="item.id">
-                    <q-item>
-                        <!-- <q-item-section avatar>
-                        <q-avatar>
-                            <img :src= "item.imagen">
-                        </q-avatar>
-                        </q-item-section> -->
-                        <q-item-section class="text-left" rounded clickable v-ripple @click="MenuUsuario(item.id)">
-                          {{item.attributes.name}}  </q-item-section>
-                        <q-item-section top side>
-                          <div class="text-grey-8 q-gutter-xs">
-                            <q-btn size="12px" flat dense round icon="more_vert" >
-                            <q-menu >
-                              <q-list style="min-width: 150px">
-                                <q-item clickable v-close-popup  @click="editarPerfilUsuario(item.id)">
-                                  <q-item-section>Editar perfil</q-item-section>
-                                </q-item>
-                                <q-separator />
-                                <q-item clickable v-close-popup  @click="eliminarPerfil(item.id)">
-                                  <q-item-section>Eliminar perfil</q-item-section>
-                                </q-item>
-                              </q-list>
-                            </q-menu>
-
-                            </q-btn>
-                          </div>
-                        </q-item-section>
-                    </q-item>
-                </div> 
-                <q-btn dense unelevated @click="MenuUsuario"> Karina</q-btn>
-            </div> 
+  <q-page class="bg-paginas">
+    <div class="column col q-ma-sm q-mr-sm">
+      <div class=" col column q-pt-xl q-ml-md" > 
+        <div v-for="(item) in ListaUsuarios" :key="item.id">
+          <q-item>
+            <q-item-section class="text-left" rounded clickable v-ripple @click="MenuUsuario(item)">
+              {{item.attributes.name}}  </q-item-section>
+            <q-item-section top side>
+              <div class="text-grey-8 q-gutter-xs">
+                <q-btn size="12px" flat dense round icon="more_vert" >
+                  <q-menu >
+                    <q-list style="min-width: 150px">
+                      <q-item clickable v-close-popup  @click="editarPerfilUsuario(item.id)">
+                        <q-item-section>Editar perfil</q-item-section>
+                      </q-item>
+                      <q-separator />
+                      <q-item clickable v-close-popup  @click="eliminarPerfil(item.id)">
+                        <q-item-section>Eliminar perfil</q-item-section>
+                      </q-item>
+                    </q-list>
+                  </q-menu>
+                </q-btn>
+              </div>
+            </q-item-section>
+      </q-item>
+      </div> 
+        <q-btn dense unelevated @click="MenuUsuario"> Karina</q-btn>
+      </div> 
     </div>
   </q-page>
 </template>
@@ -61,8 +46,12 @@ export default {
     EditarPerfil() {
       this.$router.push("/EditarPerfil");
     },
-    MenuUsuario(id) {
-      localStorage.setItem('id_usuario',id)
+    MenuUsuario(usuario) {
+      let linkHistorial = usuario.relationships.historial.links.self
+      localStorage.setItem('id_usuario',usuario.id)
+      apiClient.get(linkHistorial).then((respuesta) => {
+        localStorage.setItem('id_historial',respuesta.data.data.id)
+      })
       this.$router.push("/menuUsuario");
     },
     obtenerUsuarios() {
