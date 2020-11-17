@@ -28,7 +28,7 @@
               </q-item-label>
             </q-item-section>
             <q-item-section side top>
-              <q-btn size="15px" flat dense round color="grey-8" icon="delete" @click="eliminar(datos)" />
+              <q-btn size="15px" flat dense round color="grey-8" icon="delete" @click="eliminar(datos, index)" />
             </q-item-section>
           </q-item>
         </q-list>      
@@ -59,7 +59,7 @@ export default {
     atras(){
       this.$router.go(-1)
     },
-    eliminar(datos){
+    eliminar(datos, index){
       if (datos.nombre == "Peso") { 
           apiClient.patch("/api/v1/medicions/"+datos.id,{
           data: {
@@ -72,14 +72,14 @@ export default {
         }).then((res) => {
           this.$q.notify({
             message: 'Medición eliminada',
-            color: primary
+            color: 'primary'
           })
           let respuesta = res.data.data.attributes
           if (respuesta.peso == null && respuesta.altura == null && respuesta.imc == null && 
               respuesta.presion_arterial == null && respuesta.azucar == null) {
             apiClient.delete('/api/v1/medicions/'+datos.id)            
           }
-          this.DatosTablas();
+          this.DatosResultado.splice(index, 1)
         })
         } else if (datos.nombre == "Altura") { 
           apiClient.patch("/api/v1/medicions/"+datos.id,{
@@ -97,7 +97,7 @@ export default {
                   respuesta.presion_arterial == null && respuesta.azucar == null) {
             apiClient.delete('/api/v1/medicions/'+datos.id)            
           }
-          this.DatosTablas();
+          this.DatosResultado.splice(index, 1)
         })
         } else if (datos.nombre == "IMC") { 
           apiClient.patch("/api/v1/medicions/"+datos.id,{
@@ -115,7 +115,7 @@ export default {
                   respuesta.presion_arterial == null && respuesta.azucar == null) {
             apiClient.delete('/api/v1/medicions/'+datos.id)            
           }
-          this.DatosTablas();
+          this.DatosResultado.splice(index, 1)
         })
         } else if (datos.nombre == "Presión arterial") { 
           apiClient.patch("/api/v1/medicions/"+datos.id,{
@@ -133,7 +133,7 @@ export default {
                   respuesta.presion_arterial == null && respuesta.azucar == null) {
             apiClient.delete('/api/v1/medicions/'+datos.id)            
           }
-          this.DatosTablas();
+          this.DatosResultado.splice(index, 1)
         })
         }  else if (datos.nombre == "Azúcar") { 
           apiClient.patch("/api/v1/medicions/"+datos.id,{
@@ -151,12 +151,11 @@ export default {
                   respuesta.presion_arterial == null && respuesta.azucar == null) {
             apiClient.delete('/api/v1/medicions/'+datos.id)            
           }
-          this.DatosTablas();
+          this.DatosResultado.splice(index, 1)
         })
         }  
     },
     DatosTablas(){
-      this.DatosResultado = []
       if (this.nombreTabla == "presión arterial") {        
         apiClient.get("/api/v1/medicions?filter[user_id]="+idUser).then((res) => {
           this.RespuestaApi = res.data.data

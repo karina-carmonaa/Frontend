@@ -82,13 +82,11 @@ export default {
         else this.$router.push('/IngresosNuevos/'+id)
     },
     MostrarDatosConsultas(){
-      console.log("consultas")
       apiClient.get('/api/v1/historials/'+ idHistotial+'/consultas').then((res) => {
         this.Historial = res.data.data
       })
     },
     MostrarDatosIngresos(){
-      console.log("ingresos")
       apiClient.get('/api/v1/historials/'+ idHistotial+'/ingresos').then((res) => {
         this.Historial = res.data.data
       })

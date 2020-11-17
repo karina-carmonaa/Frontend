@@ -87,7 +87,7 @@ let idUser = JSON.parse(localStorage.getItem('id_usuario'))
 let options = { month: "short", day: "numeric"};
 export default {
     name: 'seguimientoSaludGraficas',
-    async mounted () {
+    mounted () {
       this.cargarDatosGrafica()
     },
     data() {
