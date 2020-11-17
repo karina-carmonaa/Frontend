@@ -55,22 +55,22 @@
           </q-input >
           </q-card-section> 
         </q-card> 
-        <!-- prueba del boton multi file -->
+        <!-- prueba del boton multi file 
       <q-uploader
         style="max-width: 300px"
         label="Restricted to images"
         accept=".jpg, image/*"
         @change="imprimir"
       />
-
+-->
         <input type="file" v-on:change="imprimir" />
         <div class="q-pt-md col-12">
-          <q-btn class="full-width text-center" label="Agregar" @click="agregarImg"  no-caps rounded unelevated color="secondary">  
+          <q-btn class="full-width text-center" label="Agregar imagen" @click="agregarImg"  no-caps rounded unelevated color="secondary">  
           </q-btn>
         </div>
         <div class="q-pt-md col-12" v-if="this.id != '0'">
           <div class="q-pa-md q-gutter-lg text-center">            
-            <q-btn color="negative" label="Eliminar" @click="eliminar" no-caps rounded unelevated />
+            <q-btn color="negative" label="Eliminar" @click="eliminarConsulta" no-caps rounded unelevated />
             <q-btn color="green-7" label="Compartir" no-caps rounded  unelevated />
           </div>
         </div>
@@ -105,7 +105,7 @@ export default {
     atras(){
       this.$router.go(-1)
     },
-    eliminar(){
+    eliminarConsulta(){
       apiClient.delete('api/v1/consultas/'+this.id).then(() => {
         this.$router.go(-1)
       })

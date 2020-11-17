@@ -11,7 +11,7 @@
             Consultas
           </span>
           <span v-else class="q-subtitle-2 absolute-center "> Ingresos médicos </span>
-          <q-btn flat label="Agregar" no-caps @click="Consulta(id)" class="absolute-right"/>
+          <q-btn flat label="Agregar" no-caps @click="Consulta(0)" class="absolute-right"/>
         </q-toolbar>
       </q-header>
       <q-page-container class="column col q-my-md q-mx-xs">
@@ -78,7 +78,7 @@ export default {
       this.$router.go(-1)
     },
     Consulta(id){
-      if (id == 0 ) this.$router.push('/ConsultasNuevas/'+id)
+      if (this.id == '0' ) this.$router.push('/ConsultasNuevas/'+id)
         else this.$router.push('/IngresosNuevos/'+id)
     },
     MostrarDatosConsultas(){
