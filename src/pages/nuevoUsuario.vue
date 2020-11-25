@@ -58,7 +58,7 @@ export default {
       telefono: '',
       dense: false,
       usuario: null,
-      correo: 'prueba@gmail.com'
+      correo: null
     }    
   },
   methods: {
@@ -86,13 +86,7 @@ export default {
                 user_id: res.data.data.id
               }
             }
-          }).then((res2)=>{
-/*             axios.patch('/users/'+res.data.data.id+'/relationships/historial',{
-              data: {
-                type: "historials",
-                id: res.data.data.id
-              }
-            }) */ 
+          }).then(()=>{
           })
           this.$q.notify('Usuario guardado')
           this.$router.go(-1)

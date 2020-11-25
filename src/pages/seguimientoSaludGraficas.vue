@@ -87,7 +87,7 @@ let idUser = JSON.parse(localStorage.getItem('id_usuario'))
 let options = { month: "short", day: "numeric"};
 export default {
     name: 'seguimientoSaludGraficas',
-    async mounted () {
+    mounted () {
       this.cargarDatosGrafica()
     },
     data() {
@@ -156,6 +156,10 @@ export default {
         this.CargaAzucar = false
         this.CargaIMC = false
         try {
+          dataRespuestaPeso.length = 0   
+          dataRespuestaIMC.length = 0
+          dataRespuestaAzucar.length = 0
+          dataRespuestaTension.length = 0
           apiClient.get('api/v1/users/'+idUser+'/medicions').then((res) => {
             this.respuesta = res.data.data
             for (let i = 0; i < this.respuesta.length; i++) {

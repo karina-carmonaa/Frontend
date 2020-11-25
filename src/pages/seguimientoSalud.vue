@@ -49,12 +49,12 @@
                     <p class="text-body2 text-black q-mr-xl q-pr-xl"> m </p>                    
                   </template>
                 </q-input>
-                <q-input type="number" class="q-mr-xl q-pr-xl" bottom-slots filled dense v-model="imc">
+                <q-input type="number" class="q-mr-xl q-pr-xl" :hint= 'feedback_imc'  bottom-slots filled dense v-model="imc">
                   <template v-slot:before>
                     <p class="text-body2 text-black" >IMC:</p>
                   </template>
                 </q-input>
-                <div class="q-ml-xl q-mr-xl q-pl-md q-pr-md">
+                <div class="q-mx-xl q-mt-md q-px-md">
                   <q-btn class="full-width" label="Guardar" @click="guardarMediciones" no-caps rounded unelevated color="secondary" />
                 </div>
               </div>
@@ -63,7 +63,7 @@
               </div><!-- v-for="medida in ListaMedidas" :key="medida" -->
               <q-list bordered padding separator dense class="col-12" v-for="(datos, index) in DatosResultado" :key="index" >
                 <q-slide-item class="bg-grey-6">
-                  <q-item clickable v-ripple @click="activarDialog(datos)" >
+                  <q-item clickable v-ripple @click="activarDialog(datos,index)" >
                     <q-item-section class="col-2">
                       <q-icon name="accessibility_new" size="xl"/>
                     </q-item-section>
@@ -122,10 +122,12 @@ export default {
         ListaMedidas: null,
         imc: null,
         fecha: null,
+        feedback_imc: null,
         temperatura: null,
         RespuestaApi: null,
         DatosResultado: [],
         popup: [],
+        index: null
       }
     },
     methods:{
@@ -135,12 +137,16 @@ export default {
       Recordatorio(){
       },
       //eliminar la medida
-      activarDialog(datos){
+      activarDialog(datos, index){
         this.popup = datos
-        //me permite mostrar el dialogo
+        //guardamos el index del arreglo  para poder eliminarlo si selecciona la opción
+        this.index = index
+        //me permite mostrar el dialogo para eliminar o cancelar
         this.dialog= true;
       },
       elimanarDatos(){      
+        //eliminamos los datos con el id que esta en el arreglo popup, luego vemos si la respuesta que regresa
+        //son todos null, si es así eliminamos el registro de la base de datos
         if (this.popup.nombre == "Peso") { 
           apiClient.patch("/api/v1/medicions/"+this.popup.id,{
           data: {
@@ -153,14 +159,14 @@ export default {
         }).then((res) => {
           this.$q.notify({
             message: 'Medición eliminada',
-            color: primary
+            color: 'cyan-8'
           })
           let respuesta = res.data.data.attributes
           if (respuesta.peso == null && respuesta.altura == null && respuesta.imc == null && 
               respuesta.presion_arterial == null && respuesta.azucar == null) {
             apiClient.delete('/api/v1/medicions/'+this.popup.id)            
           }
-          this.Datos();
+          this.DatosResultado.splice(this.index, 1)
         })
         } else if (this.popup.nombre == "Altura") { 
           apiClient.patch("/api/v1/medicions/"+this.popup.id,{
@@ -178,7 +184,7 @@ export default {
                   respuesta.presion_arterial == null && respuesta.azucar == null) {
             apiClient.delete('/api/v1/medicions/'+this.popup.id)            
           }
-          this.Datos();
+          this.DatosResultado.splice(this.index, 1)
         })
         } else if (this.popup.nombre == "IMC") { 
           apiClient.patch("/api/v1/medicions/"+this.popup.id,{
@@ -196,7 +202,7 @@ export default {
                   respuesta.presion_arterial == null && respuesta.azucar == null) {
             apiClient.delete('/api/v1/medicions/'+this.popup.id)            
           }
-          this.Datos();
+          this.DatosResultado.splice(this.index, 1)
         })
         } else if (this.popup.nombre == "Presión arterial") { 
           apiClient.patch("/api/v1/medicions/"+this.popup.id,{
@@ -214,7 +220,7 @@ export default {
                   respuesta.presion_arterial == null && respuesta.azucar == null) {
             apiClient.delete('/api/v1/medicions/'+this.popup.id)            
           }
-          this.Datos();
+          this.DatosResultado.splice(this.index, 1)
         })
         }  else if (this.popup.nombre == "Azúcar") { 
           apiClient.patch("/api/v1/medicions/"+this.popup.id,{
@@ -232,13 +238,19 @@ export default {
                   respuesta.presion_arterial == null && respuesta.azucar == null) {
             apiClient.delete('/api/v1/medicions/'+this.popup.id)            
           }
-          this.Datos();
+          this.DatosResultado.splice(this.index, 1)
         })
         }  
 
       },
       calcularIMC(){
-        this.imc = (this.peso / ((this.estatura)*(this.estatura))).toFixed(2)
+        if(this.peso != null && this.estatura != null){
+          this.imc = (this.peso / ((this.estatura)*(this.estatura))).toFixed(2)
+          if(this.imc < 18.5) this.feedback_imc = "Bajo peso"
+          if(this.imc >= 18.5 && this.imc <= 24.9) this.feedback_imc = "Normal"
+          if(this.imc >= 25 && this.imc <= 29.9) this.feedback_imc = "Sobrepeso"
+          if(this.imc >= 30) this.feedback_imc = "Obeso"
+        }
       },
       graficas(){
         this.$router.push("/seguimientoGraficas");

@@ -97,8 +97,7 @@ export default {
           let idUsuario = JSON.parse(localStorage.getItem('id_usuario'))
           axios.get("/users/"+idUsuario +"/historial").then((res) => {             
             this.DatosHistorial = res.data.data;
-            console.log(this.DatosHistorial)
-            localStorage.setItem('id_historial', JSON.parse(this.DatosHistorial.id))
+            console.log(this.DatosHistorial) 
             axios.get(this.DatosHistorial.relationships.medicamentos.links.related)
               .then((respuesta) => {
                 this.ListaMedicamentos = respuesta.data.data
