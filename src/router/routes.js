@@ -52,7 +52,6 @@ const routes = [
   {path: '/EstadoSaludRecomendacion/:datos', component: () => import('pages/EstadoSaludRecomendacion.vue')},  
   {path: '/seguimientoGraficas', component: () => import('pages/seguimientoSaludGraficas.vue')},   
   {path: '/seguimientoDatos/:tabla', component: () => import('pages/seguimientoSaludDatosGraficas.vue')}, 
-  {path: '/contenedor', component: () => import('components/ContenedorGraficos.vue')},
   
 ]
 
