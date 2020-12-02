@@ -111,9 +111,9 @@
                 </div>
                  <br>
                  <div >
-                      <p> Total: {{total}}</p>
+                      <p> Total: {{enviarTotal}}</p>
                  </div>
-                <q-btn color="primary" label="Enviar" @click="Recomendacion(total,idCuestionario)" @mouseenter="enviar"/>                  
+                <q-btn color="primary" label="Enviar" @click="Recomendacion(enviarTotal)" @mouseenter="enviar"/>                  
               </div>
 
               
@@ -133,23 +133,29 @@ export default {
     data() {
       return {
         idCuestionario: this.$route.params.id,
-        pregunta1: [],           
-        total: 0     
+        pregunta1: [],  
+        total:0,         
+        enviarTotal: [{puntaje:0,id:0}]
         }
     },
     methods:{
       enviar(){
         this.total = 0
         for (let i = 0; i < this.pregunta1.length; i++) {
-          this.total +=  parseInt(this.pregunta1[i])         
+          this.total +=  parseInt(this.pregunta1[i]) 
         }
+         this.enviarTotal.splice(0,1)
+         this.enviarTotal.push({
+                                  puntaje:this.total,
+                                  id:this.$route.params.id   
+        })
       },
         atras(){
             this.$router.go(-1)
         },
-         Recomendacion(score,areaAfectada){
-           console.log(score+'  '+areaAfectada)
-            this.$router.push('/EstadoSaludRecomendacion'+score+'/'+areaAfectada)
+         Recomendacion(enviarTotal){
+           console.log(enviarTotal)
+           this.$router.push('/EstadoSaludRecomendacion'+this.enviarTotal)
         },
         reset () {
       this.pre1 = null

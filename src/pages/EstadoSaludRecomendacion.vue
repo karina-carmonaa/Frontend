@@ -67,6 +67,8 @@ export default {
     name: 'EstadoSaludCuestionario',
     data() {
       return {
+         idZona: this.$route.params.id,
+         puntaje2: this.$route.params.punatje
                               
       }
     },
