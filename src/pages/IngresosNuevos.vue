@@ -45,27 +45,24 @@
         <div class="text-center q-mt-md column">
           <p class="text-h6 text-black">Receta médica</p>
         </div>
-        <q-card v-for="(imagen, key) in imagenes" :key="key">
-          <img :src = "imagen.img_url"> 
-          <q-card-section vertical class="q-pt-xs text-subtitle2 text-center">
-            <q-input dense v-model="imagen.img_descrip" placeholder="Nombre de la imagen" >
-              <template v-slot:append>
-                <q-btn round dense flat icon="delete" @click="eliminar(key)" />
-            </template>
-          </q-input >
-          </q-card-section> 
-        </q-card> 
-        <!-- prueba del boton multi file
-      <q-uploader
-        style="max-width: 300px"
-        label="Restricted to images"
-        accept=".jpg, image/*"
-        @change="imprimir"
-      />
- -->
-        <input type="file" v-on:change="imprimir" />
+        <br/>
+        <div class="q-pa-md row q-gutter-sm">
+          <q-card v-for="(imagen, key) in imagenes" :key="key">
+            <q-img :src = "imagen.img_url"/> 
+            <q-card-section vertical class="q-pt-xs text-subtitle2 text-center">
+              <q-input dense v-model="imagen.img_descrip" placeholder="Nota" >
+                <template v-slot:append>
+                  <q-btn round dense flat icon="delete" @click="eliminar(key, imagen.img_url, imagen.img_id)" />
+                </template>
+              </q-input >
+            </q-card-section> 
+          </q-card> 
+        </div>        
+        <input type="file" @change="uploadFile" style="display:none" ref="fileInput" multiple 
+          accept=".jpg, image/*" @rejected="onRejected" auto-upload/>
         <div class="q-pt-md col-12">
-          <q-btn class="full-width text-center" label="Agregar Imagen" @click="agregarImg"  no-caps rounded unelevated color="secondary">  
+          <q-btn class="full-width text-center"  @click="$refs.fileInput.click()" label="Agregar Imagen"
+              no-caps rounded unelevated color="secondary" >  
           </q-btn>
         </div>
         <div class="q-pt-md col-12" v-if="this.id != '0'">
@@ -84,9 +81,10 @@
 
 <script>
 import Footer from 'components/piePagina.vue'
-let idHistorial = JSON.parse(localStorage.getItem('id_historial'));
 import apiClient from '../service/api.js';
 
+let idHistorial = JSON.parse(localStorage.getItem('id_historial'));
+let fileData = new FormData()  
 export default {
   name: 'IngresosNuevos',
   data() {
@@ -99,15 +97,44 @@ export default {
       receta: false,      
       id: this.$route.params.id, 
       imagenes: [],
+      path: [],
+      RespuestaImagenes: [],
     }
   },
   methods:{
-    atras(){
-      this.$router.go(-1)
+    //este metodo sirve para mostrar las imagenes en la pantalla
+    uploadFile(event) {  
+      for (let i = 0; i < event.target.files.length; i++) {
+        try {
+          let url = URL.createObjectURL(event.target.files[i]) 
+          this.imagenes.push({img_url: url, img_descrip: "" })
+          this.receta = true
+          //añadimos el path de los archivos seleccionados
+          this.path.push(event.target.files[i])
+        } catch (error) {
+          console.log(error)
+        }        
+      }      
     },
+    onRejected (rejectedEntries) {
+      //por si algo sale mal al momento de cargar las imagenes
+      this.$q.notify({
+        type: 'negative',
+        message: '${rejectedEntries.length} los archivos no pasaron la validación'
+      })
+    },
+    atras(){ this.$router.go(-1) },
     eliminarConsulta(){
       apiClient.delete('api/v1/ingresos/'+this.id).then(() => {
-        this.$router.go(-1)
+        //eliminamos las imagenes igual, relacionadas con esta consulta
+        for (let i = 0; i < this.imagenes.length; i++) {
+          fileData = new FormData()
+          fileData.append("actualizar", true)
+          fileData.append("nombre", this.imagenes[i].img_url)
+          apiClient.post('upload', fileData);
+        }
+        //todo sale bien, nos regresamos a la página anterior
+        this.$router.go(-1) 
       })
     },
     guardarConsulta(){
@@ -125,9 +152,14 @@ export default {
               fecha: this.fecha
             }
           }
-        }).then((res) => {
+        }).then((res) => {       
+          let id = res.data.data.id 
+          for (let i = 0; i < this.path.length; i++) {
+            this.guardarImagenes(i, id);
+          } 
+          //todo salio bien y regresa a la siguiente página
           this.$q.notify('Ingreso guardado')
-          this.$router.go(-1)
+          this.$router.go(-1) 
         });
       } else {
           //edita la consulta existente segun el id
@@ -144,15 +176,32 @@ export default {
               fecha: this.fecha
             }
           }
-        }).then((res) => {
+        }).then(() => {                 
+            //si tiene algun nuevo valor en el path se guarda en la base de datos
+            if (this.path.length != 0) { 
+              for (let i = 0; i < this.path.length; i++) {
+                this.guardarImagenes(i, this.id )
+              } 
+            } else{
+              //se actualizan todas las descripciones de las imagenes antiguas       
+              for (let i = 0; i < this.imagenes.length; i++) {
+                apiClient.patch('api/v1/documentos/'+this.imagenes[i].img_id,{
+                  data: {
+                    type: "documentos",
+                    id: this.imagenes[i].img_id,
+                    attributes: {
+                      descripcion: this.imagenes[i].img_descrip
+                    }
+                  }
+                })              
+              } 
+            }          
+          //todo salio bien y regresa a la siguiente página
           this.$q.notify('Ingreso guardado')
-          this.$router.go(-1)
+          this.$router.go(-1) 
         });
       }
-    },
-    agregarImg(){
-      console.log(this.imagenes)
-    },
+    },       
     ObtenerDatos(){
       if(this.id != 0){
         apiClient.get('api/v1/ingresos/'+this.id).then((res) => {
@@ -162,20 +211,59 @@ export default {
           this.telefono = respuestaApi.telefono
           this.hospital = respuestaApi.hospital
           this.fecha = respuestaApi.fecha
+          apiClient.get('api/v1/ingresos/'+this.id+'/documentos').then((resDoc) => {
+            let datos = resDoc.data
+            for (let i = 0; i < datos.data.length; i++) {
+              this.receta = true              
+              this.imagenes.push({
+                img_url: datos.data[i].attributes.url_imagen, 
+                img_descrip: datos.data[i].attributes.descripcion,
+                img_id: datos.data[i].id
+              })         
+            }
+          })          
         })
       }
     },
-    imprimir: function (event) {
-      try {
-        let url = URL.createObjectURL(event.target.files[0]) 
-        this.imagenes.push({img_url: url, img_descrip: "" })
-        this.receta = true
-      } catch (error) {
-        console.log(error)
-      }      
+    guardarImagenes(i, id){
+      //verifico que son imagenes nuevas en la parte de editar
+      let NuevasFotos = this.imagenes.length - this.path.length
+      let datosDescripcion
+      if (NuevasFotos == 0 ) datosDescripcion = this.imagenes[i].img_descrip
+        else datosDescripcion = this.imagenes[i+NuevasFotos].img_descrip 
+
+      //esta medio chafa pero funciona, se tiene que inicialiar cada vez que cambie le file_path, o tantas veces
+      //como fotos se seleccionen. se pasan todos los valores para hacer el guardado 
+      fileData = new FormData();
+      fileData.append("id",id) //id del ingreso para hacer la relación          
+      fileData.append("idHi",idHistorial) //id del historial correspondiente al ingreso       
+      fileData.append("type", 'ingresos') //tipo de imagen que se va a guardar
+      fileData.append("cont", i) //para diferenciar las imagenes que se envian del mismo ingreso
+      fileData.append("file_path", this.path[i]) //datos de la foto i a enviar            
+      apiClient.post('upload', fileData).then((response) => {
+        //una vez que ya se guardo la imagen en el servidor y guardamos todos los datos en un arreglo 
+        //se guarda la url y la descripción que se haya puesto en la tabla correspondiente con la api.
+        apiClient.post('api/v1/documentos', {
+          data: {
+            type: "documentos",
+            attributes: {
+              ingreso_id: id,
+              descripcion: datosDescripcion,
+              url_imagen: response.data.path
+            }
+          }
+        })
+      }); 
     },
-    eliminar(id){
+    eliminar(id, nombre, idImagen){
       this.imagenes.splice(id, 1)
+      if(idImagen!= undefined ){
+        fileData = new FormData()
+        fileData.append("actualizar", true)
+        fileData.append("nombre", nombre)
+        apiClient.post('upload', fileData);
+        apiClient.delete('api/v1/documentos/'+idImagen);
+      }
     }
   },
   components: {
@@ -186,14 +274,3 @@ export default {
   },
 }
 </script>
-
-<style lang="scss">
-  .inputfile {
-    width: 0.1px;
-    height: 0.1px;
-    opacity: 0;
-    overflow: hidden;
-    position: absolute;
-    z-index: -1;
-  }
-</style>
