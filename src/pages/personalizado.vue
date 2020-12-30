@@ -38,7 +38,7 @@
               </div>
               <div class="text-grey-7 q-pt-md q-ml-sm q-mr-lg" v-if="dias != null || model != null">
                 <p v-if="doneEl == false && (model.label == 'Diariamente' || model.label == 'Semanalmente' || model.value == 4)">
-                  El recordatorio se repetira
+                  El recordatorio del medicamento se repetira
 
                   <span v-if="model.value === 2 && diaSemana.length != 0 "> el 
                     <span v-for="diaSemana in opSemanas" :key="diaSemana.value">
@@ -60,13 +60,13 @@
                   <span v-if="dias == 1 || dias == null " > {{model.unitario}} </span>
                   <span v-else >{{dias}} {{model.multiple}}</span>
                 </p>
-                <p v-else-if="doneEl == true && model.label == 'Mensualmente'"> El recordatorio se repetirá
+                <p v-else-if="doneEl == true && model.label == 'Mensualmente'"> El recordatorio del medicamento se repetirá
                    el {{NumOrdinal.label}} {{diaMesEl.label}} de cada 
                   <span v-if="dias == 1 || dias == null" > {{model.unitario}} </span>
                   <span v-else >{{dias}} {{model.multiple}}</span>
                 </p>
                 <p v-if="doneCada == true && model.label == 'Mensualmente'">
-                  El recordatorio se repetirá
+                  El recordatorio del medicamento se repetirá
                   <span v-if="diaMesSelec.length != 0">
                     los días               
                     <span v-for="diaMes in diaMes" :key="diaMes.dia"> 
@@ -228,7 +228,6 @@ export default {
             this.doneEl = true
             this.doneCada =false
           }
-          console.log(this.diasMes)
         },
         anadirDiaMes(dia, index){
           var conta = 0
@@ -247,8 +246,7 @@ export default {
             )
             dia.color= 'indigo-5'
           }   
-          return dia.done = !dia.done
-          
+          return dia.done = !dia.done          
         },
         algo(item,index){
           var cont = 0

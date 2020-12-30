@@ -9,8 +9,8 @@
         @click="Historial"/>
         <q-btn unelevated class="bg-cyan-9 text-cyan-1" rounded label="Recordatorio medicamentos" no-caps 
         @click="Recordatorio"/>
-        <q-btn unelevated class="bg-cyan-9 text-cyan-1" rounded label="A qué médico acudir" no-caps
-        @click="Medico" />
+        <!-- <q-btn unelevated class="bg-cyan-9 text-cyan-1" rounded label="A qué médico acudir" no-caps
+        @click="Medico" /> -->
       </div>
   </q-page>
 </template>

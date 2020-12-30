@@ -41,10 +41,8 @@
 
 <script>
 import Footer from 'components/piePagina.vue'
-import axios from "axios";
-axios.defaults.withCredentials = true;
-axios.defaults.baseURL = "http://agemed.test/api/v1";
-axios.defaults.headers = { "Content-Type": "application/vnd.api+json" };
+import apiClient from '../service/api.js';
+
 export default {
   data() {
     return {
@@ -52,13 +50,14 @@ export default {
         'Masculino','Femenino'
       ],
       id: this.$route.params.id,
-      text: '',
-      Fecha: '',
+      text: null,
+      Fecha: null,
       genero: null,
-      telefono: '',
+      telefono: null,
       dense: false,
       usuario: null,
-      correo: null
+      correo: null,
+      cuenta: localStorage.getItem('id_cuenta')
     }    
   },
   methods: {
@@ -66,12 +65,12 @@ export default {
       this.$router.go(-1)
     },  
     crearUsuario() { 
-        axios.post("/users", {
+        apiClient.post("/api/v1/users", {
           data: {
             type: "users",
             attributes: {
               name: this.text,
-              cuenta_id: 1,
+              cuenta_id: 1,//this.cuenta,
               telefono: this.telefono,
               email: this.correo,
               sexo: this.genero,
@@ -79,7 +78,7 @@ export default {
             }  
           } 
         }).then((res) => {
-          axios.post("/historials", {
+          apiClient.post("/api/v1/historials", {
             data:{
               type: "historials",
               attributes: {
@@ -93,7 +92,7 @@ export default {
         });
     },
     obtenerUsuario(){
-      axios.get("/users/"+this.id).then((res) => {
+      apiClient.get("/api/v1/users/"+this.id).then((res) => {
         this.usuario = res.data.data.attributes;
         this.text = this.usuario.name
         this.correo = this.usuario.email
@@ -103,14 +102,14 @@ export default {
       })
     },
     actualizarUsuario(){
-      axios.patch("/users/"+this.id, {
+      apiClient.patch("/api/v1/users/"+this.id, {
         data: {
           type: "users",
           id: this.id,
           attributes: {
             name: this.text,
             email: this.correo,
-            cuenta_id: 1,
+            cuenta_id: 1,//this.cuenta,
             telefono: this.telefono,
             sexo: this.genero,
             fecha_nacimiento: this.Fecha

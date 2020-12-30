@@ -11,7 +11,7 @@
                 <span class="q-subtitle-2 absolute-center ">
                     {{tipo}}
                 </span>
-                <q-btn flat label="Guardar" no-caps @click="guardarConsulta()" class="absolute-right"/>
+                <q-btn flat label="Guardar" no-caps @click="agregarDocEstudios()" class="absolute-right"/>
             </q-toolbar>
             </q-header>
             <q-page-container class="row q-ma-lg">
@@ -44,10 +44,10 @@
                 </q-input>
               </div>
               <div class="text-center q-mt-md column">
-                <p class="text-h6 text-black">Receta médica</p>
+                <p class="text-h6 text-black">Documentos</p>
               </div>
               <br/>
-              <div class="q-pa-md row q-gutter-sm">
+              <div class="q-pa-md col-12 q-gutter-sm">
                 <q-card v-for="(imagen, key) in imagenes" :key="key">
                   <q-img :src = "imagen.img_url"/> 
                   <q-card-section vertical class="q-pt-xs text-subtitle2 text-center">
@@ -77,6 +77,20 @@
               </q-footer>
             </q-page-container>
           </q-layout>
+          <q-dialog v-model="dialog" position="bottom">
+            <q-card>
+              <q-card-section class="row items-center q-pb-none">
+                <div class="text-h6">Estudios</div>
+              </q-card-section>
+              <q-card-section>
+                ¿Agregar los documentos a los estudios?
+              </q-card-section>
+              <q-card-section>
+                <q-btn flat label="Si" round @click="guardarConsulta(1)" />
+                <q-btn flat label="No" round @click="guardarConsulta(0)"/>
+              </q-card-section>
+            </q-card>
+          </q-dialog>
         </div>  
     </div>
 </template>
@@ -87,9 +101,8 @@ import Footer from 'components/piePagina.vue'
 import tipo from 'pages/IngresosNuevos.vue'
 
 let fileData
-let idHistorial = JSON.parse(localStorage.getItem('id_historial'));
 export default {
-  name: 'FormularioConsultas-Ingresos.vue',
+  name: 'FormularioConsultas-Ingresos',
   data() {
     return {
       motivo: null,
@@ -102,7 +115,10 @@ export default {
       imagenes: [],
       path: [],
       RespuestaImagenes: [],
-      tipoMinusculas: this.tipo.toLowerCase()
+      tipoMinusculas: this.tipo.toLowerCase(),
+      idHistorial: null,
+      dialog: false,
+      //agregarDocEstudio: 2
     }
   },
   components:{
@@ -113,8 +129,15 @@ export default {
     tipoImagen: String
   },
   methods:{
+    agregarDocEstudios(){
+      if (this.receta == true && this.path.length != 0) {
+        this.dialog=true
+      }else{
+        this.guardarConsulta(0)
+      }
+    },
     atras(){ this.$router.go(-1) },  
-    //este metodo sirve para mostrar las imagenes en la pantalla
+    //este método sirve para mostrar las imagenes en la pantalla
     uploadFile(event) {  
       for (let i = 0; i < event.target.files.length; i++) {
         try {
@@ -136,7 +159,7 @@ export default {
       })
     },
     eliminarConsulta(){
-      apiClient.delete('api/v1/'+this.tipoMinusculas+'/'+this.id).then(() => {
+      apiClient.delete('/api/v1/'+this.tipoMinusculas+'/'+this.id).then(() => {
         //eliminamos las imagenes igual, relacionadas con esta consulta
         for (let i = 0; i < this.imagenes.length; i++) {
           fileData = new FormData()
@@ -148,14 +171,14 @@ export default {
         this.$router.go(-1) 
       })
     },
-    guardarConsulta(){
+    guardarConsulta(agregarDocEstudio){
       if (this.id == 0) {
         //guarda una nueva consulta
-        apiClient.post('api/v1/'+this.tipoMinusculas, {
+        apiClient.post('/api/v1/'+this.tipoMinusculas, {
           data: {
             type: this.tipoMinusculas,
             attributes: {
-              historial_id: idHistorial,
+              historial_id: this.idHistorial,
               motivo: this.motivo,
               medico: this.medico,
               telefono: this.telefono,
@@ -166,20 +189,19 @@ export default {
         }).then((res) => {       
           let id = res.data.data.id 
           for (let i = 0; i < this.path.length; i++) {
-            this.guardarImagenes(i, id);
+            this.guardarImagenes(i, id, agregarDocEstudio);
           } 
           //todo salio bien y regresa a la siguiente página
-          this.$q.notify(this.tipoMinusculas+'guardado')
           this.$router.go(-1) 
         });
       } else {
           //edita la consulta existente segun el id
-          apiClient.patch('api/v1/'+this.tipoMinusculas+'/'+this.id,{
+          apiClient.patch('/api/v1/'+this.tipoMinusculas+'/'+this.id,{
           data: {
             type: this.tipoMinusculas,
             id: this.id,
             attributes: {
-              historial_id: idHistorial,
+              historial_id: this.idHistorial,
               motivo: this.motivo,
               medico: this.medico,
               telefono: this.telefono,
@@ -191,38 +213,38 @@ export default {
             //si tiene algun nuevo valor en el path se guarda en la base de datos
             if (this.path.length != 0) { 
               for (let i = 0; i < this.path.length; i++) {
-                this.guardarImagenes(i, this.id )
+                this.guardarImagenes(i, this.id , agregarDocEstudio)
               } 
             } else{
               //se actualizan todas las descripciones de las imagenes antiguas       
               for (let i = 0; i < this.imagenes.length; i++) {
-                apiClient.patch('api/v1/'+this.tipoImagen+'/'+this.imagenes[i].img_id,{
+                apiClient.patch('/api/v1/'+this.tipoImagen+'/'+this.imagenes[i].img_id,{
                   data: {
                     type: this.tipoImagen,
                     id: this.imagenes[i].img_id,
                     attributes: {
-                      descripcion: this.imagenes[i].img_descrip
+                      descripcion: this.imagenes[i].img_descrip,
+                      rel_estudio: agregarDocEstudio
                     }
                   }
                 })              
               } 
             }          
           //todo salio bien y regresa a la siguiente página
-          this.$q.notify('Ingreso guardado')
           this.$router.go(-1) 
         });
       }
     },       
     ObtenerDatos(){
       if(this.id != 0){
-        apiClient.get('api/v1/'+this.tipoMinusculas+'/'+this.id).then((res) => {
+        apiClient.get('/api/v1/'+this.tipoMinusculas+'/'+this.id).then((res) => {
           let respuestaApi = res.data.data.attributes
           this.motivo = respuestaApi.motivo,
           this.medico = respuestaApi.medico,
           this.telefono = respuestaApi.telefono
           this.hospital = respuestaApi.hospital
           this.fecha = respuestaApi.fecha
-          apiClient.get('api/v1/'+this.tipoMinusculas+'/'+this.id+'/'+this.tipoImagen).then((resDoc) => {
+          apiClient.get('/api/v1/'+this.tipoMinusculas+'/'+this.id+'/'+this.tipoImagen).then((resDoc) => {
             let datos = resDoc.data
             for (let i = 0; i < datos.data.length; i++) {
               this.receta = true              
@@ -236,7 +258,7 @@ export default {
         })
       }
     },
-    guardarImagenes(i, id){
+    guardarImagenes(i, id, agregarDocEstudio){
       //verifico que son imagenes nuevas en la parte de editar
       let NuevasFotos = this.imagenes.length - this.path.length
       let datosDescripcion
@@ -247,7 +269,7 @@ export default {
       //como fotos se seleccionen. se pasan todos los valores para hacer el guardado 
       fileData = new FormData();
       fileData.append("id",id) //id del ingreso para hacer la relación          
-      fileData.append("idHi",idHistorial) //id del historial correspondiente al ingreso       
+      fileData.append("idHi",this.idHistorial) //id del historial correspondiente al ingreso       
       fileData.append("type", this.tipo) //this.tipo de imagen que se va a guardar
       fileData.append("cont", i) //para diferenciar las imagenes que se envian del mismo ingreso
       fileData.append("file_path", this.path[i]) //datos de la foto i a enviar            
@@ -255,30 +277,30 @@ export default {
         //una vez que ya se guardo la imagen en el servidor y guardamos todos los datos en un arreglo 
         //se guarda la url y la descripción que se haya puesto en la tabla correspondiente con la api.
         if (this.tipoImagen == "estudios") {
-          apiClient.post('api/v1/estudios', {
+          apiClient.post('/api/v1/estudios', {
             data: {
               type: 'estudios',
               attributes: {
                 consulta_id: id,
                 descripcion: datosDescripcion,
-                url_imagen: response.data.path
+                url_imagen: response.data.path,
+                rel_estudio: agregarDocEstudio
               }
             }
           })
         } else {
-          apiClient.post('api/v1/documentos', {
+          apiClient.post('/api/v1/documentos', {
             data: {
               type: 'documentos',
               attributes: {
                 ingreso_id: id,
                 descripcion: datosDescripcion,
-                url_imagen: response.data.path
+                url_imagen: response.data.path,
+                rel_estudio: agregarDocEstudio
               }
             }
           })
-
-        }
-        
+        }        
       }); 
     },
     eliminar(id, nombre, idImagen){
@@ -288,11 +310,12 @@ export default {
         fileData.append("actualizar", true)
         fileData.append("nombre", nombre)
         apiClient.post('upload', fileData);
-        apiClient.delete('api/v1/'+this.tipoImagen+'/'+idImagen);
+        apiClient.delete('/api/v1/'+this.tipoImagen+'/'+idImagen);
       }
     }
   },
   mounted() {
+    this.idHistorial = localStorage.getItem('id_historial');
     this.ObtenerDatos();
   },
 }

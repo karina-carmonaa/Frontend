@@ -23,9 +23,8 @@
                 </q-btn>
               </div>
             </q-item-section>
-      </q-item>
-      </div> 
-        <q-btn dense unelevated @click="MenuUsuario"> Karina</q-btn>
+          </q-item>
+        </div> 
       </div> 
     </div>
   </q-page>
@@ -42,6 +41,11 @@ export default {
       ListaUsuarios: null
     };
   },
+  /*created() {
+    apiClient.get('/api/user').then(res =>{
+      console.log(res.data)
+    })
+  },*/
   methods: {
     EditarPerfil() {
       this.$router.push("/EditarPerfil");
@@ -51,13 +55,14 @@ export default {
       localStorage.setItem('id_usuario',usuario.id)
       apiClient.get(linkHistorial).then((respuesta) => {
         localStorage.setItem('id_historial',respuesta.data.data.id)
+        this.$router.push("/menuUsuario");
       })
-      this.$router.push("/menuUsuario");
     },
     obtenerUsuarios() {
+      let cuenta = localStorage.getItem('id_cuenta')
       apiClient.get("/api/v1/cuentas/1/users").then((res) => {
         this.ListaUsuarios = res.data.data;
-        localStorage.setItem('id_cuenta', JSON.stringify(1))
+        this.$q.loading.hide()
       });
     },
     editarPerfilUsuario(id){

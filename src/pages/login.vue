@@ -33,28 +33,40 @@
 
 <script>
 import apiClient from '../service/api.js';
+import Cookies from 'js-cookie'
+
 export default {
-    name: 'login',
-    data() {
-        return {
-            email: 'karina2@ejemplo.com',
-            password: '123',
-            isPwd: true
-        }
-    },
-    methods: {
-      inicio(){
-        this.$router.push('/usuarios')
-        /* apiClient.get('/sanctum/csrf-cookie')
-          .then(response => {
-              apiClient.post('/login' , {
-                    email: this.email,
-                    password: this.password
-              }).then(response => {
-                  console.log(response)
-              })
-          }); */
-      }
+  name: 'login',
+  data() {
+    return {
+      email: 'alex@codecourse.com',
+      password: 'ilovecats',
+      isPwd: true,
+      user: {}
     }
+  },
+  methods: {
+    inicio(){
+      this.$router.push('/usuarios')
+    /* apiClient.get('/sanctum/csrf-cookie')
+      .then((res) => {
+        console.log(res)
+        console.log(res.config.xsrfCookieName)
+        Cookies.set("X-XSRF-TOKEN", Cookies.get("XSRF-TOKEN"))
+        console.log(Cookies.get("XSRF-TOKEN"))
+        apiClient.post('/login' , {
+          email: this.email,
+          password: this.password
+          //device_name: 'karina'
+        }).then(response => {
+          this.user = response.data
+          localStorage.setItem('id_cuenta',this.user.cuenta_id)
+          this.$router.push('/usuarios')
+          console.log(response.status)
+        })
+        .catch(error => console.log(error));          
+      }); */
+    }
+  }
 }
 </script>
