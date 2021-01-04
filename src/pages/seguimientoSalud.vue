@@ -38,7 +38,7 @@
                     <p class="text-body2 text-black" >Peso:</p>
                   </template>
                   <template v-slot:after>
-                    <p class="text-body2 text-black q-mr-xl q-pr-xl"> Kg</p>
+                    <p class="text-body2 text-black q-mr-xl q-pr-sm"> Kg</p>
                   </template>
                 </q-input>
                 <q-input type="number" v-on:blur="calcularIMC" bottom-slots filled dense v-model="estatura">
