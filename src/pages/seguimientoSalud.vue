@@ -22,6 +22,7 @@
                 </span></p>
               </div>
               <br/>
+<<<<<<< HEAD
               <div class="q-gutter-y-xs col-12">
                 <q-input bottom-slots filled dense v-model="TensionArterial">
                   <template v-slot:before>
@@ -54,6 +55,60 @@
                     <p class="text-body2 text-black" >IMC:</p>
                   </template>
                 </q-input>
+=======
+              <div class="q-gutter-y-xs col-12 ">
+                <div class="row">
+                  <div class="col-7">
+                    <q-input bottom-slots filled v-on:blur="recomendacionPresion" dense v-model="TensionArterial">
+                      <template v-slot:before>
+                        <p class="text-body2 text-black margen-p">Presión arterial:</p>
+                      </template>
+                      <template v-slot:after>
+                        <p class="text-black margen-p q-pr-xs ">/</p>
+                      </template>
+                    </q-input> 
+                  </div>
+                  <div class="col-4">
+                     <q-input bottom-slots filled dense v-model="TensionArterial2" v-on:blur="recomendacionPresion">
+                      <template v-slot:after>
+                        <p class="text-body2 text-black margen-p">mmHg</p>
+                      </template>
+                    </q-input>
+                  </div>   
+                  <p v-if="recomendacion" class=" text-center">Es recomendable que vaya a valoración con un médico</p>      
+                  <div class="col-11">                                  
+                    <q-input bottom-slots filled dense v-model="azucar">
+                      <template v-slot:before>
+                        <p class="text-body2 text-black margen-p">Azúcar:</p>
+                      </template>
+                      <template v-slot:after>
+                        <p class="text-body2 text-black margen-p">mg/dl</p>
+                      </template>
+                    </q-input>
+                    <q-input type="number" v-on:blur="calcularIMC" bottom-slots filled dense v-model="peso">
+                      <template v-slot:before>
+                        <p class="text-body2 text-black margen-p">Peso:</p>
+                      </template>
+                      <template v-slot:after>
+                        <p class="text-body2 text-black  margen-p"> Kg</p>
+                      </template>
+                    </q-input>
+                    <q-input type="number" v-on:blur="calcularIMC" :hint= 'feedback_estatura' hint-color="red" bottom-slots filled dense v-model="estatura">
+                      <template v-slot:before>
+                        <p class="text-body2 text-black margen-p">Estatura:</p>
+                      </template>
+                      <template v-slot:after>
+                        <p class="text-body2 text-black margen-p"> m </p>                    
+                      </template>
+                    </q-input>
+                    <q-input type="number" :hint= 'feedback_imc'  bottom-slots filled dense v-model="imc">
+                      <template v-slot:before>
+                        <p class="text-body2 text-black margen-p" >IMC:</p>
+                      </template>
+                    </q-input>                    
+                  </div>
+                </div>
+>>>>>>> e78f1c5a7b99530a4c11c694dc4794c67574708e
                 <div class="q-mx-xl q-mt-md q-px-md">
                   <q-btn class="full-width" label="Guardar" @click="guardarMediciones" no-caps rounded unelevated color="secondary" />
                 </div>
@@ -71,10 +126,8 @@
                     <q-item-label lines="1">{{datos.nombre}}</q-item-label>
                     <q-item-label caption> {{datos.numero}}  <span> {{datos.medida}} </span></q-item-label>
                   </q-item-section>
-                  <q-item-section side>
-                    <q-item-label> {{datos.fecha}} <span>
-                      <q-icon name="keyboard_arrow_right" size="xs" />                    
-                    </span></q-item-label>
+                  <q-item-section side >
+                    <q-item-label class="q-pr-md"> {{datos.fecha}} </q-item-label>
                   </q-item-section>
                 </q-item>
                 </q-slide-item>
@@ -115,7 +168,9 @@ export default {
     data() {
       return {
         dialog: false,
+        recomendacion: false, 
         TensionArterial: null,
+        TensionArterial2: null,
         azucar: null,
         peso: null,
         estatura: null,
@@ -123,6 +178,7 @@ export default {
         imc: null,
         fecha: null,
         feedback_imc: null,
+        feedback_estatura: null,
         temperatura: null,
         RespuestaApi: null,
         DatosResultado: [],
@@ -146,7 +202,7 @@ export default {
       },
       elimanarDatos(){      
         //eliminamos los datos con el id que esta en el arreglo popup, luego vemos si la respuesta que regresa
-        //son todos null, si es así eliminamos el registro de la base de datos
+        //son todos null, si es así eliminamos el registro de la base de datos y luego eliminamos el dato del arreglo
         if (this.popup.nombre == "Peso") { 
           apiClient.patch("/api/v1/medicions/"+this.popup.id,{
           data: {
@@ -210,7 +266,8 @@ export default {
             type: "medicions",
             id: this.popup.id,
             attributes: {
-              presion_arterial : null
+              presion_arterial : null,
+              presion_arterial2 : null
             }
           }
         }).then((res) => {
@@ -241,10 +298,24 @@ export default {
           this.DatosResultado.splice(this.index, 1)
         })
         }  
+      },
+      recomendacionPresion(){
+        if (this.TensionArterial2 != null && this.TensionArterial != null ) {
+          if(this.TensionArterial < 90 || this.TensionArterial > 130 || 
+              this.TensionArterial2 < 75 || this.TensionArterial2 > 95  ) this.recomendacion = true
+            else this.recomendacion = false
+        }
 
       },
-      calcularIMC(){
+      calcularIMC(){       
         if(this.peso != null && this.estatura != null){
+          let pesoMetros = this.estatura.split("",this.estatura.length) 
+          if (this.estatura.split(".").length == 1 ) {
+            if ( pesoMetros.length == 2 ) this.feedback_estatura = "Metros (0."+pesoMetros[0]+pesoMetros[1]+")"
+             else this.feedback_estatura = "Metros ("+pesoMetros[0]+"."+pesoMetros[1]+pesoMetros[2]+")"
+          } else {
+             this.feedback_estatura = null
+          }
           this.imc = (this.peso / ((this.estatura)*(this.estatura))).toFixed(2)
           if(this.imc < 18.5) this.feedback_imc = "Bajo peso"
           if(this.imc >= 18.5 && this.imc <= 24.9) this.feedback_imc = "Normal"
@@ -269,18 +340,19 @@ export default {
               type: "medicions",
               attributes:{
                 //obtenemos el id que esta guardado en el localstorage
-                user_id: JSON.parse(localStorage.getItem('id_usuario')),
+                user_id: localStorage.getItem('id_usuario'),
                 altura: this.estatura,
                 imc: this.imc,
                 peso: this.peso,
                 presion_arterial: this.TensionArterial,
+                presion_arterial2: this.TensionArterial2,
                 azucar: this.azucar
               }
             }
           }).then(() => {
               this.$q.notify('Mediciones guardadas'),
-              this.TensionArterial = null, this.estatura = null,
-              this.imc = null, this.peso = null, this.azucar = null
+              this.TensionArterial = null, this.estatura = null, this.recomendacion = false,
+              this.imc = null, this.peso = null, this.azucar = null, this.TensionArterial2 = null
               this.Datos();
           })
         }
@@ -289,7 +361,7 @@ export default {
         this.DatosResultado = [];
         //opciones de como queremos mostrar la feche
         let options = { month: "short", day: "numeric"};
-        let idUser = JSON.parse(localStorage.getItem('id_usuario'));
+        let idUser = localStorage.getItem('id_usuario');
         //filtro para encontrar todas las mediciones segun el id del usuario
         apiClient.get("/api/v1/medicions?filter[user_id]="+idUser).then((res) => {
           //almacenamos las respuestas en el array RespuestasApi
@@ -311,12 +383,12 @@ export default {
               medida: "kg", fecha: fechaCreated, id: this.RespuestaApi[i].id})
             }
             if(this.RespuestaApi[i].attributes.presion_arterial != null){
-              this.DatosResultado.push({nombre: "Presión arterial", numero: this.RespuestaApi[i].attributes.presion_arterial,
-              medida: " ", fecha: fechaCreated, id: this.RespuestaApi[i].id})
+              this.DatosResultado.push({nombre: "Presión arterial", numero: this.RespuestaApi[i].attributes.presion_arterial + 
+              " / "+this.RespuestaApi[i].attributes.presion_arterial2, medida: "mmHg", fecha: fechaCreated, id: this.RespuestaApi[i].id})
             }
             if(this.RespuestaApi[i].attributes.azucar != null){
               this.DatosResultado.push({nombre: "Azúcar", numero: this.RespuestaApi[i].attributes.azucar,
-              medida: " ", fecha: fechaCreated, id: this.RespuestaApi[i].id})
+              medida: "mg/dl", fecha: fechaCreated, id: this.RespuestaApi[i].id})
             }            
           }
         })
@@ -332,3 +404,9 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+  .margen-p{
+    margin: 0px;
+  }
+</style>

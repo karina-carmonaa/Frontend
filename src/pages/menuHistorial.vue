@@ -15,9 +15,9 @@
                 <q-btn unelevated class="bg-cyan-9 text-cyan-1" rounded label="Estudios" no-caps 
                     to="/Estudios"/>
                     <q-btn unelevated class="bg-cyan-9 text-cyan-1" rounded label="Consultas" no-caps 
-                   to="/Consultas/0"/>
+                   to="/Consultas-Ingresos/0"/>
                     <q-btn unelevated class="bg-cyan-9 text-cyan-1" rounded label="Ingresos" no-caps 
-                    to="/Consultas/1"/>
+                    to="/Consultas-Ingresos/1"/>
                 <q-footer class="q-px-xl">
                     <Footer />
                 </q-footer>

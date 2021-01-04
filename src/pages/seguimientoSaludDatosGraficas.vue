@@ -45,7 +45,6 @@ import Footer from 'components/piePagina.vue'
 import apiClient from '../service/api.js';
 
 let options = { month: "short", day: "numeric"};
-let idUser = JSON.parse(localStorage.getItem('id_usuario'));
 export default {
   name: 'Estudios',
   data() {
@@ -53,6 +52,7 @@ export default {
       nombreTabla: this.$route.params.tabla,
       RespuestaApi: null,
       DatosResultado: [],
+      idUser: localStorage.getItem('id_usuario')
     }
   },
   methods:{
@@ -123,7 +123,8 @@ export default {
             type: "medicions",
             id: datos.id,
             attributes: {
-              presion_arterial : null
+              presion_arterial : null,
+              presion_arterial2: null
             }
           }
         }).then((res) => {
@@ -157,7 +158,7 @@ export default {
     },
     DatosTablas(){
       if (this.nombreTabla == "presión arterial") {        
-        apiClient.get("/api/v1/medicions?filter[user_id]="+idUser).then((res) => {
+        apiClient.get("/api/v1/medicions?filter[user_id]="+this.idUser).then((res) => {
           this.RespuestaApi = res.data.data
           for (let i = 0; i < this.RespuestaApi.length; i++) {
             let fechaCreated = new Date(this.RespuestaApi[i].attributes.created_at).toLocaleDateString("es-MX", options)
@@ -166,13 +167,13 @@ export default {
                 let dia = fechaCreated.split(' ')
                 fechaCreated = "0"+dia[0]+" "+dia[1]
               }
-              this.DatosResultado.push({nombre: "Presión arterial", numero: this.RespuestaApi[i].attributes.presion_arterial,
-              medida: " ", fecha: fechaCreated, id: this.RespuestaApi[i].id})
+              this.DatosResultado.push({nombre: "Presión arterial", numero: this.RespuestaApi[i].attributes.presion_arterial +
+              " / "+ this.RespuestaApi[i].attributes.presion_arterial2, medida: "mmHg", fecha: fechaCreated, id: this.RespuestaApi[i].id})
             }       
           }
         })        
       } else if (this.nombreTabla == "peso") {    
-        apiClient.get("/api/v1/medicions?filter[user_id]="+idUser).then((res) => {
+        apiClient.get("/api/v1/medicions?filter[user_id]="+this.idUser).then((res) => {
           this.RespuestaApi = res.data.data
           for (let i = 0; i < this.RespuestaApi.length; i++) {
             let fechaCreated = new Date(this.RespuestaApi[i].attributes.created_at).toLocaleDateString("es-MX", options)
@@ -187,7 +188,7 @@ export default {
           }
         })                
       } else  if (this.nombreTabla == "azúcar") {  
-        apiClient.get("/api/v1/medicions?filter[user_id]="+idUser).then((res) => {
+        apiClient.get("/api/v1/medicions?filter[user_id]="+this.idUser).then((res) => {
           this.RespuestaApi = res.data.data
           for (let i = 0; i < this.RespuestaApi.length; i++) {
             let fechaCreated = new Date(this.RespuestaApi[i].attributes.created_at).toLocaleDateString("es-MX", options)
@@ -197,12 +198,12 @@ export default {
                 fechaCreated = "0"+dia[0]+" "+dia[1]
               }
               this.DatosResultado.push({nombre: "Azúcar", numero: this.RespuestaApi[i].attributes.azucar,
-              medida: " ", fecha: fechaCreated, id: this.RespuestaApi[i].id})
+              medida: "mg/dl", fecha: fechaCreated, id: this.RespuestaApi[i].id})
             }    
           }
         })                        
       } else if (this.nombreTabla == "IMC") {
-        apiClient.get("/api/v1/medicions?filter[user_id]="+idUser).then((res) => {
+        apiClient.get("/api/v1/medicions?filter[user_id]="+this.idUser).then((res) => {
           this.RespuestaApi = res.data.data
           for (let i = 0; i < this.RespuestaApi.length; i++) {
             let fechaCreated = new Date(this.RespuestaApi[i].attributes.created_at).toLocaleDateString("es-MX", options)
@@ -223,7 +224,7 @@ export default {
     Footer
   },
   mounted(){
-    this.DatosTablas()
+    this.DatosTablas();
   }
 }
 </script>

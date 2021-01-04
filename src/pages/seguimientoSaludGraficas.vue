@@ -83,15 +83,16 @@ let dataRespuestaPeso = new Array();
 let dataRespuestaTension = new Array();
 let dataRespuestaIMC = new Array();
 let dataRespuestaAzucar = new Array();
-let idUser = JSON.parse(localStorage.getItem('id_usuario'))
 let options = { month: "short", day: "numeric"};
 export default {
     name: 'seguimientoSaludGraficas',
     mounted () {
-      this.cargarDatosGrafica()
+      this.idUser = localStorage.getItem('id_usuario')
+      this.cargarDatosGrafica();      
     },
     data() {
       return {
+        idUser: null,
         CargaPeso: false,
         CargaTension: false,
         CargaIMC: false,
@@ -110,7 +111,7 @@ export default {
         chartdataTension: {
           labels: [],
           datasets: [{
-            label: 'Tensión arterial',
+            label: 'Presión arterial',
             backgroundColor: '#FC2525',
             borderColor: '#FC2525',
             data: dataRespuestaTension,           
@@ -160,7 +161,7 @@ export default {
           dataRespuestaIMC.length = 0
           dataRespuestaAzucar.length = 0
           dataRespuestaTension.length = 0
-          apiClient.get('api/v1/users/'+idUser+'/medicions').then((res) => {
+          apiClient.get('api/v1/users/'+this.idUser+'/medicions').then((res) => {
             this.respuesta = res.data.data
             for (let i = 0; i < this.respuesta.length; i++) {
               let fechaCreated = new Date(this.respuesta[i].attributes.created_at).toLocaleDateString("es-MX", options)
@@ -170,7 +171,7 @@ export default {
                 this.CargaPeso = true
               }
               if (this.respuesta[i].attributes.presion_arterial != null) {
-                this.chartdataTension.labels.push(fechaCreated);
+                this.chartdataTension.labels.push(this.respuesta[i].attributes.presion_arterial2);
                 dataRespuestaTension.push(this.respuesta[i].attributes.presion_arterial);
                 this.CargaTension = true
               }    

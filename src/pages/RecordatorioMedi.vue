@@ -29,9 +29,10 @@
                   <q-item-section @click="editarMedicamento(medicamento.id)">
                     <p class="text-subtitle1"> {{medicamento.attributes.nombre}} </p>
                     <div class="q-subtitle-1">
-                      <span class="text-red-10 text-weight-bold">{{medicamento.attributes.cada}}
-                        <span v-if="medicamento.attributes.cada == 1"> vez al día</span>
-                        <span v-else> veces al día</span>
+                      <span class="text-red-10 text-weight-bold">{{medicamento.attributes.cada}} cada
+                        {{ medicamento.attributes.hora }}
+                        <span v-if="medicamento.attributes.hora == 1"> hora </span>
+                        <span v-else> horas </span>
                       </span>
                       <span > | Por {{medicamento.attributes.duracion}}
                         <span v-if="medicamento.attributes.duracion == 1"> día </span>
@@ -97,7 +98,6 @@ export default {
           let idUsuario = JSON.parse(localStorage.getItem('id_usuario'))
           axios.get("/users/"+idUsuario +"/historial").then((res) => {             
             this.DatosHistorial = res.data.data;
-            console.log(this.DatosHistorial) 
             axios.get(this.DatosHistorial.relationships.medicamentos.links.related)
               .then((respuesta) => {
                 this.ListaMedicamentos = respuesta.data.data

@@ -42,9 +42,8 @@ const routes = [
   { path: '/NuevoRecordatorio/:id', component: () => import('pages/nuevoRecordatorio.vue') },
   {path: '/menuHistorial', component: () => import('pages/menuHistorial.vue')},
   {path: '/Estudios', component: () => import('pages/Estudios.vue')},
-  {path: '/Consultas/:id', component: () => import('pages/Consultas.vue')},
+  {path: '/Consultas-Ingresos/:id', component: () => import('pages/Consultas-Ingresos.vue')},
   {path: '/ConsultasNuevas/:id', component: () => import('pages/ConsultasNuevas.vue')},
-  {path: '/Ingresos', component: () => import('pages/Ingresos.vue')},
   {path: '/IngresosNuevos/:id', component: () => import('pages/IngresosNuevos.vue')},
   {path: '/Repetir', component: () => import('pages/Repetir.vue')},
   {path: '/personalizado', component: () => import('pages/personalizado.vue')},
@@ -52,7 +51,6 @@ const routes = [
   {path: '/EstadoSaludRecomendacion/:datos', component: () => import('pages/EstadoSaludRecomendacion.vue')},  
   {path: '/seguimientoGraficas', component: () => import('pages/seguimientoSaludGraficas.vue')},   
   {path: '/seguimientoDatos/:tabla', component: () => import('pages/seguimientoSaludDatosGraficas.vue')}, 
-  {path: '/contenedor', component: () => import('components/ContenedorGraficos.vue')},
   
 ]
 

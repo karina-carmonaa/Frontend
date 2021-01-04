@@ -38,7 +38,7 @@
               </q-item-section>
               <q-item-section top class="col-3">
                 <q-item-label lines="1">
-                  {{ new Date(consulta.attributes.fecha).toLocaleDateString("es-MX", { month: "short", day: "numeric"}) }}
+                  {{ new Date(consulta.attributes.fecha+"T20:25:57+00:00").toLocaleDateString("es-MX", opciones) }}
                 </q-item-label>
                 <q-item-label caption lines="1">                  
                   <span>{{consulta.attributes.telefono}} </span>
@@ -59,18 +59,18 @@
 </template>
 
 <script>
-import Footer from 'components/piePagina.vue' 
-import { date } from 'quasar'
+import Footer from 'components/piePagina.vue'; 
 import apiClient from '../service/api.js';
-
-let idHistotial = JSON.parse(localStorage.getItem('id_historial'));
+import date from 'quasar';
 
 export default {
-  name: 'Consultas',
+  name: 'Consultas-Ingresos',
   data() {
     return {
       Historial: null,
-      id: this.$route.params.id
+      id: this.$route.params.id,
+      idHistorial: null,
+      opciones: { month: 'short', day: 'numeric'},
     }
   },
   methods:{
@@ -82,12 +82,12 @@ export default {
         else this.$router.push('/IngresosNuevos/'+id)
     },
     MostrarDatosConsultas(){
-      apiClient.get('/api/v1/historials/'+ idHistotial+'/consultas').then((res) => {
+      apiClient.get('/api/v1/historials/'+ this.idHistorial+'/consultas').then((res) => {
         this.Historial = res.data.data
       })
     },
     MostrarDatosIngresos(){
-      apiClient.get('/api/v1/historials/'+ idHistotial+'/ingresos').then((res) => {
+      apiClient.get('/api/v1/historials/'+this.idHistorial+'/ingresos').then((res) => {  
         this.Historial = res.data.data
       })
     }
@@ -96,6 +96,7 @@ export default {
     Footer
   },
   mounted() {
+    this.idHistorial = localStorage.getItem('id_historial');
     if(this.id == 0) this.MostrarDatosConsultas();
       else this.MostrarDatosIngresos();
   },

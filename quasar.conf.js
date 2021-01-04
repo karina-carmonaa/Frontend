@@ -67,7 +67,7 @@ module.exports = function (/* ctx */) {
 
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-devServer
     devServer: {
-      https: false,
+      https:false,
       port: 8080,
       open: true // opens browser window automatically
     },
@@ -143,6 +143,7 @@ module.exports = function (/* ctx */) {
 
     // Full list of options: https://quasar.dev/quasar-cli/developing-cordova-apps/configuring-cordova
     cordova: {
+      backButton: true,
       // noIosLegacyBuildFlag: true, // uncomment only if you know what you are doing
     },
 
