@@ -100,6 +100,7 @@
                   <p v-if="recomendacion" class=" text-center">Es recomendable que vaya a valoración con un médico</p>      
                 </div>
                 <!-- <div class="q-mx-xl q-mt-md q-px-md">
+                <div class="q-mx-xl q-mt-md q-px-md">
                   <q-btn class="full-width" label="Guardar" @click="guardarMediciones" no-caps rounded unelevated color="secondary" />
                 </div> -->
               <div class="row justify-center col-12 q-pt-md">
