@@ -12,6 +12,7 @@
                 <span class="q-subtitle-1 absolute-center ">
                   Seguimiento de salud
                 </span>
+                <q-btn flat label="Agregar" no-caps @click="guardarMediciones" class="absolute-right"/>
                 <!-- <q-btn flat label="Recordar" no-caps @click="Recordatorio" class="absolute-right"/> -->
               </q-toolbar>
             </q-header>
@@ -24,33 +25,7 @@
               <br/>
               <div class="q-gutter-y-xs col-12 ">
                 <div class="row">
-                  <div class="col-7">
-                    <q-input bottom-slots filled v-on:blur="recomendacionPresion" dense v-model="TensionArterial">
-                      <template v-slot:before>
-                        <p class="text-body2 text-black margen-p">Presión arterial:</p>
-                      </template>
-                      <template v-slot:after>
-                        <p class="text-black margen-p q-pr-xs ">/</p>
-                      </template>
-                    </q-input> 
-                  </div>
-                  <div class="col-4">
-                     <q-input bottom-slots filled dense v-model="TensionArterial2" v-on:blur="recomendacionPresion">
-                      <template v-slot:after>
-                        <p class="text-body2 text-black margen-p">mmHg</p>
-                      </template>
-                    </q-input>
-                  </div>   
-                  <p v-if="recomendacion" class=" text-center">Es recomendable que vaya a valoración con un médico</p>      
-                  <div class="col-11">                                  
-                    <q-input bottom-slots filled dense v-model="azucar">
-                      <template v-slot:before>
-                        <p class="text-body2 text-black margen-p">Azúcar:</p>
-                      </template>
-                      <template v-slot:after>
-                        <p class="text-body2 text-black margen-p">mg/dl</p>
-                      </template>
-                    </q-input>
+                  <div class="col-11">                    
                     <q-input type="number" v-on:blur="calcularIMC" bottom-slots filled dense v-model="peso">
                       <template v-slot:before>
                         <p class="text-body2 text-black margen-p">Peso:</p>
@@ -71,12 +46,66 @@
                       <template v-slot:before>
                         <p class="text-body2 text-black margen-p" >IMC:</p>
                       </template>
-                    </q-input>                    
+                    </q-input>                                 
+                    <q-input bottom-slots filled dense v-model="azucar">
+                      <template v-slot:before>
+                        <p class="text-body2 text-black margen-p">Azúcar:</p>
+                      </template>
+                      <template v-slot:after>
+                        <p class="text-body2 text-black margen-p">mg/dl</p>
+                      </template>
+                    </q-input>     
+                    <q-input bottom-slots filled dense v-model="fre_cardiaca">
+                      <template v-slot:before>
+                        <p class="text-body2 text-black margen-p">Frecuencia cardiaca:</p>
+                      </template>
+                      <template v-slot:after>
+                        <p class="text-body2 text-black margen-p">lpm</p>
+                      </template>
+                    </q-input> 
+                    <q-input bottom-slots filled dense v-model="temperatura">
+                      <template v-slot:before>
+                        <p class="text-body2 text-black margen-p">Temperatura:</p>
+                      </template>
+                      <template v-slot:after>
+                        <p class="text-body2 text-black margen-p">°C</p>
+                      </template>
+                    </q-input>      
+                    <q-input bottom-slots filled dense v-model="oxigeno">
+                      <template v-slot:before>
+                        <p class="text-body2 text-black margen-p">Saturación de oxígeno:</p>
+                      </template>
+                      <template v-slot:after>
+                        <p class="text-body2 text-black margen-p">SPO2</p>
+                      </template>
+                    </q-input>         
                   </div>
+                  <div class="col-7">
+                    <q-input bottom-slots filled v-on:blur="recomendacionPresion" dense v-model="TensionArterial">
+                      <template v-slot:before>
+                        <p class="text-body2 text-black margen-p">Presión arterial:</p>
+                      </template>
+                      <template v-slot:after>
+                        <p class="text-black margen-p q-pr-xs ">/</p>
+                      </template>
+                    </q-input> 
+                  </div>
+                  <div class="col-4">
+                     <q-input bottom-slots filled dense v-model="TensionArterial2" v-on:blur="recomendacionPresion">
+                      <template v-slot:after>
+                        <p class="text-body2 text-black margen-p">mmHg</p>
+                      </template>
+                    </q-input>
+                  </div>                  
+                  <p v-if="recomendacion" class=" text-center">Es recomendable que vaya a valoración con un médico</p>      
                 </div>
-                <div class="q-mx-xl q-mt-md q-px-md">
+                <!-- <div class="q-mx-xl q-mt-md q-px-md">
                   <q-btn class="full-width" label="Guardar" @click="guardarMediciones" no-caps rounded unelevated color="secondary" />
-                </div>
+                </div> -->
+              <div class="row justify-center col-12 q-pt-md">
+                <q-btn label="Historial y gráficas" no-caps unelevated rounded padding="8px 60px" 
+                @click="graficas" color="secondary" />
+              </div>  
               </div>
               <div class="text-center q-mt-md column">
                 <p class="text-h6 text-black">Medidas recientes</p>
@@ -111,11 +140,6 @@
                   </q-card-actions>
                 </q-card>
               </q-dialog>
-              <div class="row justify-center col-12 q-pt-md">
-                <q-btn label="Historial y gráficas" no-caps unelevated rounded padding="8px 60px" 
-                @click="graficas" color="secondary" />
-              </div>                
-                      
               <q-footer>
                 <Footer />
               </q-footer>
@@ -145,6 +169,8 @@ export default {
         feedback_imc: null,
         feedback_estatura: null,
         temperatura: null,
+        oxigeno: null,
+        fre_cardiaca: null,
         RespuestaApi: null,
         DatosResultado: [],
         popup: [],
@@ -178,13 +204,10 @@ export default {
             }
           }
         }).then((res) => {
-          this.$q.notify({
-            message: 'Medición eliminada',
-            color: 'cyan-8'
-          })
           let respuesta = res.data.data.attributes
           if (respuesta.peso == null && respuesta.altura == null && respuesta.imc == null && 
-              respuesta.presion_arterial == null && respuesta.azucar == null) {
+              respuesta.presion_arterial == null && respuesta.azucar == null && 
+                  respuesta.temperatura == null && respuesta.fre_cardiaca == null && respuesta.oxigeno == null) {
             apiClient.delete('/api/v1/medicions/'+this.popup.id)            
           }
           this.DatosResultado.splice(this.index, 1)
@@ -199,10 +222,10 @@ export default {
             }
           }
         }).then((res) => {
-          this.$q.notify('Medición eliminada')
           let respuesta = res.data.data.attributes
           if (respuesta.peso == null && respuesta.altura == null && respuesta.imc == null && 
-                  respuesta.presion_arterial == null && respuesta.azucar == null) {
+                  respuesta.presion_arterial == null && respuesta.azucar == null && 
+                  respuesta.temperatura == null && respuesta.fre_cardiaca == null) {
             apiClient.delete('/api/v1/medicions/'+this.popup.id)            
           }
           this.DatosResultado.splice(this.index, 1)
@@ -217,10 +240,10 @@ export default {
             }
           }
         }).then((res) => {
-          this.$q.notify('Medición eliminada')
           let respuesta = res.data.data.attributes
           if (respuesta.peso == null && respuesta.altura == null && respuesta.imc == null && 
-                  respuesta.presion_arterial == null && respuesta.azucar == null) {
+                  respuesta.presion_arterial == null && respuesta.azucar == null && 
+                  respuesta.temperatura == null && respuesta.fre_cardiaca == null && respuesta.oxigeno == null) {
             apiClient.delete('/api/v1/medicions/'+this.popup.id)            
           }
           this.DatosResultado.splice(this.index, 1)
@@ -236,10 +259,10 @@ export default {
             }
           }
         }).then((res) => {
-          this.$q.notify('Medición eliminada')
           let respuesta = res.data.data.attributes
           if (respuesta.peso == null && respuesta.altura == null && respuesta.imc == null && 
-                  respuesta.presion_arterial == null && respuesta.azucar == null) {
+                  respuesta.presion_arterial == null && respuesta.azucar == null && 
+                  respuesta.temperatura == null && respuesta.fre_cardiaca == null  && respuesta.oxigeno == null) {
             apiClient.delete('/api/v1/medicions/'+this.popup.id)            
           }
           this.DatosResultado.splice(this.index, 1)
@@ -254,15 +277,69 @@ export default {
             }
           }
         }).then((res) => {
-          this.$q.notify('Medición eliminada')
           let respuesta = res.data.data.attributes
           if (respuesta.peso == null && respuesta.altura == null && respuesta.imc == null && 
-                  respuesta.presion_arterial == null && respuesta.azucar == null) {
+                  respuesta.presion_arterial == null && respuesta.azucar == null && 
+                  respuesta.temperatura == null && respuesta.fre_cardiaca == null && respuesta.oxigeno == null) {
             apiClient.delete('/api/v1/medicions/'+this.popup.id)            
           }
           this.DatosResultado.splice(this.index, 1)
         })
-        }  
+        }  else if (this.popup.nombre == "Temperatura") { 
+          apiClient.patch("/api/v1/medicions/"+this.popup.id,{
+          data: {
+            type: "medicions",
+            id: this.popup.id,
+            attributes: {
+              temperatura : null
+            }
+          }
+        }).then((res) => {
+          let respuesta = res.data.data.attributes
+          if (respuesta.peso == null && respuesta.altura == null && respuesta.imc == null && 
+                  respuesta.presion_arterial == null && respuesta.azucar == null && 
+                  respuesta.temperatura == null && respuesta.fre_cardiaca == null && respuesta.oxigeno == null) {
+            apiClient.delete('/api/v1/medicions/'+this.popup.id)            
+          }
+          this.DatosResultado.splice(this.index, 1)
+        })
+        } else if (this.popup.nombre == "Frecuencia cardiaca") { 
+          apiClient.patch("/api/v1/medicions/"+this.popup.id,{
+          data: {
+            type: "medicions",
+            id: this.popup.id,
+            attributes: {
+              fre_cardiaca : null
+            }
+          }
+        }).then((res) => {
+          let respuesta = res.data.data.attributes
+          if (respuesta.peso == null && respuesta.altura == null && respuesta.imc == null && 
+                  respuesta.presion_arterial == null && respuesta.azucar == null && 
+                  respuesta.temperatura == null && respuesta.fre_cardiaca == null && respuesta.oxigeno == null) {
+            apiClient.delete('/api/v1/medicions/'+this.popup.id)            
+          }
+          this.DatosResultado.splice(this.index, 1)
+        })
+        } else if (this.popup.nombre == "Saturación de oxígeno") { 
+          apiClient.patch("/api/v1/medicions/"+this.popup.id,{
+          data: {
+            type: "medicions",
+            id: this.popup.id,
+            attributes: {
+              oxigeno : null
+            }
+          }
+        }).then((res) => {
+          let respuesta = res.data.data.attributes
+          if (respuesta.peso == null && respuesta.altura == null && respuesta.imc == null && 
+                  respuesta.presion_arterial == null && respuesta.azucar == null && 
+                  respuesta.temperatura == null && respuesta.fre_cardiaca == null && respuesta.oxigeno == null) {
+            apiClient.delete('/api/v1/medicions/'+this.popup.id)            
+          }
+          this.DatosResultado.splice(this.index, 1)
+        })
+        }
       },
       recomendacionPresion(){
         if (this.TensionArterial2 != null && this.TensionArterial != null ) {
@@ -299,7 +376,7 @@ export default {
       },
       guardarMediciones(){
         if(this.estatura != null || this.imc != null || this.peso != null || this.TensionArterial != null
-            || this.azucar != null){
+            || this.azucar != null || this.fre_cardiaca != null || this.temperatura != null || this.oxigeno != null){
           apiClient.post("/api/v1/medicions", {
             data: {
               type: "medicions",
@@ -311,13 +388,17 @@ export default {
                 peso: this.peso,
                 presion_arterial: this.TensionArterial,
                 presion_arterial2: this.TensionArterial2,
-                azucar: this.azucar
+                azucar: this.azucar,
+                fre_cardiaca: this.fre_cardiaca,
+                temperatura: this.temperatura,
+                oxigeno: this.oxigeno
               }
             }
           }).then(() => {
               this.$q.notify('Mediciones guardadas'),
               this.TensionArterial = null, this.estatura = null, this.recomendacion = false,
-              this.imc = null, this.peso = null, this.azucar = null, this.TensionArterial2 = null
+              this.imc = null, this.peso = null, this.azucar = null, this.TensionArterial2 = null,
+              this.fre_cardiaca = null, this.temperatura = null, this.oxigeno = null
               this.Datos();
           })
         }
@@ -354,7 +435,19 @@ export default {
             if(this.RespuestaApi[i].attributes.azucar != null){
               this.DatosResultado.push({nombre: "Azúcar", numero: this.RespuestaApi[i].attributes.azucar,
               medida: "mg/dl", fecha: fechaCreated, id: this.RespuestaApi[i].id})
-            }            
+            }   
+            if(this.RespuestaApi[i].attributes.fre_cardiaca != null){
+              this.DatosResultado.push({nombre: "Frecuencia cardiaca", numero: this.RespuestaApi[i].attributes.fre_cardiaca,
+              medida: "lpm", fecha: fechaCreated, id: this.RespuestaApi[i].id})
+            }      
+            if(this.RespuestaApi[i].attributes.temperatura != null){
+              this.DatosResultado.push({nombre: "Temperatura", numero: this.RespuestaApi[i].attributes.temperatura,
+              medida: "°C", fecha: fechaCreated, id: this.RespuestaApi[i].id})
+            }        
+            if(this.RespuestaApi[i].attributes.oxigeno != null){
+              this.DatosResultado.push({nombre: "Saturación de oxígeno", numero: this.RespuestaApi[i].attributes.oxigeno,
+              medida: "SPO2", fecha: fechaCreated, id: this.RespuestaApi[i].id})
+            }         
           }
         })
       },

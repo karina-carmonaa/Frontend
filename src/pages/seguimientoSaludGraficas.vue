@@ -64,7 +64,40 @@
                       <q-icon name="keyboard_arrow_right" size="sm" />
                     </q-item-section>
                   </q-item>  
-                </div>     
+                </div> 
+                <div class="text-center col" v-if="CargaFreCar">
+                  <line-chart :chartData="chartdataFreCar" :options="options" class="graficas"/>
+                  <q-item class="bg-grey-3" clickable @click="MostrarDatos('frecuencia cardiaca')">
+                    <q-item-section>
+                      <q-item-label>Mostrar todos los datos</q-item-label>
+                    </q-item-section>
+                    <q-item-section class="col-2">
+                      <q-icon name="keyboard_arrow_right" size="sm" />
+                    </q-item-section>
+                  </q-item>
+                </div>   
+                <div class="text-center col" v-if="CargaTemp">
+                  <line-chart :chartData="chartdataTemp" :options="options" class="graficas"/>
+                  <q-item class="bg-grey-3" clickable @click="MostrarDatos('temperatura')">
+                    <q-item-section>
+                      <q-item-label>Mostrar todos los datos</q-item-label>
+                    </q-item-section>
+                    <q-item-section class="col-2">
+                      <q-icon name="keyboard_arrow_right" size="sm" />
+                    </q-item-section>
+                  </q-item>
+                </div>  
+                <div class="text-center col" v-if="CargaOxigeno">
+                  <line-chart :chartData="chartdataOxigeno" :options="options" class="graficas"/>
+                  <q-item class="bg-grey-3" clickable @click="MostrarDatos('saturación de oxígeno')">
+                    <q-item-section>
+                      <q-item-label>Mostrar todos los datos</q-item-label>
+                    </q-item-section>
+                    <q-item-section class="col-2">
+                      <q-icon name="keyboard_arrow_right" size="sm" />
+                    </q-item-section>
+                  </q-item>
+                </div>   
               </div>                        
               <q-footer>
                 <Footer />
@@ -83,6 +116,9 @@ let dataRespuestaPeso = new Array();
 let dataRespuestaTension = new Array();
 let dataRespuestaIMC = new Array();
 let dataRespuestaAzucar = new Array();
+let dataRespuestaOxigeno= new Array();
+let dataRespuestaTemp = new Array();
+let dataRespuestaFreCar = new Array();
 let options = { month: "short", day: "numeric"};
 export default {
     name: 'seguimientoSaludGraficas',
@@ -97,6 +133,9 @@ export default {
         CargaTension: false,
         CargaIMC: false,
         CargaAzucar: false,
+        CargaOxigeno: false,
+        CargaTemp: false,
+        CargaFreCar: false,
         respuesta: null,
         chartdataPeso: {
           labels: [],
@@ -138,6 +177,36 @@ export default {
 				    fill: false
           }]
         },
+        chartdataOxigeno:{
+          labels:[],
+          datasets: [{
+            label: 'Saturación de oxígeno',
+            backgroundColor: '#FC2525',
+            borderColor: '#FC2525',
+            data: dataRespuestaOxigeno,
+            fill: false
+          }]
+        },
+        chartdataFreCar: {
+          labels: [],
+          datasets: [{
+            label: 'Frecuencia cardiaca',
+            backgroundColor: '#FC2525',
+            borderColor: '#FC2525',
+            data: dataRespuestaFreCar,           
+				    fill: false
+          }]
+        },
+        chartdataTemp: {
+          labels: [],
+          datasets: [{
+            label: 'Temperatura',
+            backgroundColor: '#FC2525',
+            borderColor: '#FC2525',
+            data: dataRespuestaTemp,           
+				    fill: false
+          }]
+        },
         options: {
           responsive: true,
           maintainAspectRatio: false
@@ -156,11 +225,17 @@ export default {
         this.CargaTension = false
         this.CargaAzucar = false
         this.CargaIMC = false
+        this.CargaOxigeno = false
+        this.CargaTemp = false
+        this.CargaFreCar = false
         try {
           dataRespuestaPeso.length = 0   
           dataRespuestaIMC.length = 0
           dataRespuestaAzucar.length = 0
           dataRespuestaTension.length = 0
+          dataRespuestaFreCar.length = 0
+          dataRespuestaOxigeno.length = 0
+          dataRespuestaTemp.length = 0
           apiClient.get('api/v1/users/'+this.idUser+'/medicions').then((res) => {
             this.respuesta = res.data.data
             for (let i = 0; i < this.respuesta.length; i++) {
@@ -184,6 +259,21 @@ export default {
                 this.chartdataIMC.labels.push(fechaCreated);
                 dataRespuestaIMC.push(this.respuesta[i].attributes.imc);
                 this.CargaIMC = true
+              }          
+              if(this.respuesta[i].attributes.fre_cardiaca != null){
+                this.chartdataFreCar.labels.push(fechaCreated)
+                dataRespuestaFreCar.push(this.respuesta[i].attributes.fre_cardiaca)
+                this.CargaFreCar = true
+              }
+              if (this.respuesta[i].attributes.oxigeno != null) {
+                this.chartdataOxigeno.labels.push(fechaCreated);
+                dataRespuestaOxigeno.push(this.respuesta[i].attributes.oxigeno);
+                this.CargaOxigeno = true
+              }          
+              if (this.respuesta[i].attributes.temperatura != null) {
+                this.chartdataTemp.labels.push(fechaCreated);
+                dataRespuestaTemp.push(this.respuesta[i].attributes.temperatura);
+                this.CargaTemp = true
               }                         
             }
           })

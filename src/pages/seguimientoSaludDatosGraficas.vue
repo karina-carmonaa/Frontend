@@ -76,7 +76,8 @@ export default {
           })
           let respuesta = res.data.data.attributes
           if (respuesta.peso == null && respuesta.altura == null && respuesta.imc == null && 
-              respuesta.presion_arterial == null && respuesta.azucar == null) {
+              respuesta.presion_arterial == null && respuesta.azucar == null &&
+                  respuesta.fre_cardiaca == null && respuesta.oxigeno == null && respuesta.temperatura) {
             apiClient.delete('/api/v1/medicions/'+datos.id)            
           }
           this.DatosResultado.splice(index, 1)
@@ -91,10 +92,10 @@ export default {
             }
           }
         }).then((res) => {
-          this.$q.notify('Medición eliminada')
           let respuesta = res.data.data.attributes
           if (respuesta.peso == null && respuesta.altura == null && respuesta.imc == null && 
-                  respuesta.presion_arterial == null && respuesta.azucar == null) {
+                  respuesta.presion_arterial == null && respuesta.azucar == null &&
+                  respuesta.fre_cardiaca == null && respuesta.oxigeno == null && respuesta.temperatura) {
             apiClient.delete('/api/v1/medicions/'+datos.id)            
           }
           this.DatosResultado.splice(index, 1)
@@ -109,10 +110,10 @@ export default {
             }
           }
         }).then((res) => {
-          this.$q.notify('Medición eliminada')
           let respuesta = res.data.data.attributes
           if (respuesta.peso == null && respuesta.altura == null && respuesta.imc == null && 
-                  respuesta.presion_arterial == null && respuesta.azucar == null) {
+                  respuesta.presion_arterial == null && respuesta.azucar == null &&
+                  respuesta.fre_cardiaca == null && respuesta.oxigeno == null && respuesta.temperatura) {
             apiClient.delete('/api/v1/medicions/'+datos.id)            
           }
           this.DatosResultado.splice(index, 1)
@@ -128,10 +129,10 @@ export default {
             }
           }
         }).then((res) => {
-          this.$q.notify('Medición eliminada')
           let respuesta = res.data.data.attributes
           if (respuesta.peso == null && respuesta.altura == null && respuesta.imc == null && 
-                  respuesta.presion_arterial == null && respuesta.azucar == null) {
+                  respuesta.presion_arterial == null && respuesta.azucar == null &&
+                  respuesta.fre_cardiaca == null && respuesta.oxigeno == null && respuesta.temperatura) {
             apiClient.delete('/api/v1/medicions/'+datos.id)            
           }
           this.DatosResultado.splice(index, 1)
@@ -146,10 +147,67 @@ export default {
             }
           }
         }).then((res) => {
-          this.$q.notify('Medición eliminada')
           let respuesta = res.data.data.attributes
           if (respuesta.peso == null && respuesta.altura == null && respuesta.imc == null && 
-                  respuesta.presion_arterial == null && respuesta.azucar == null) {
+                  respuesta.presion_arterial == null && respuesta.azucar == null &&
+                  respuesta.fre_cardiaca == null && respuesta.oxigeno == null && respuesta.temperatura) {
+            apiClient.delete('/api/v1/medicions/'+datos.id)            
+          }
+          this.DatosResultado.splice(index, 1)
+        })
+        }  
+        else if (datos.nombre == "Saturación de oxígeno") { 
+          apiClient.patch("/api/v1/medicions/"+datos.id,{
+          data: {
+            type: "medicions",
+            id: datos.id,
+            attributes: {
+              oxigeno : null
+            }
+          }
+        }).then((res) => {
+          let respuesta = res.data.data.attributes
+          if (respuesta.peso == null && respuesta.altura == null && respuesta.imc == null && 
+                  respuesta.presion_arterial == null && respuesta.azucar == null &&
+                  respuesta.fre_cardiaca == null && respuesta.oxigeno == null && respuesta.temperatura) {
+            apiClient.delete('/api/v1/medicions/'+datos.id)            
+          }
+          this.DatosResultado.splice(index, 1)
+        })
+        }  
+        else if (datos.nombre == "Frecuencia cardiaca") { 
+          apiClient.patch("/api/v1/medicions/"+datos.id,{
+          data: {
+            type: "medicions",
+            id: datos.id,
+            attributes: {
+              fre_cardiaca : null
+            }
+          }
+        }).then((res) => {
+          let respuesta = res.data.data.attributes
+          if (respuesta.peso == null && respuesta.altura == null && respuesta.imc == null && 
+                  respuesta.presion_arterial == null && respuesta.azucar == null &&
+                  respuesta.fre_cardiaca == null && respuesta.oxigeno == null && respuesta.temperatura) {
+            apiClient.delete('/api/v1/medicions/'+datos.id)            
+          }
+          this.DatosResultado.splice(index, 1)
+        })
+        }  
+        else if (datos.nombre == "Temperatura") { 
+          apiClient.patch("/api/v1/medicions/"+datos.id,{
+          data: {
+            type: "medicions",
+            id: datos.id,
+            attributes: {
+              temperatura : null
+            }
+          }
+        }).then((res) => {
+          let respuesta = res.data.data.attributes
+          if (respuesta.peso == null && respuesta.altura == null && respuesta.imc == null && 
+                  respuesta.presion_arterial == null && respuesta.azucar == null &&
+                  respuesta.fre_cardiaca == null && respuesta.oxigeno == null && respuesta.temperatura) {
             apiClient.delete('/api/v1/medicions/'+datos.id)            
           }
           this.DatosResultado.splice(index, 1)
@@ -217,7 +275,52 @@ export default {
             }    
           }
         })    
-      }       
+      }  else if (this.nombreTabla == "frecuencia cardiaca") {
+        apiClient.get("/api/v1/medicions?filter[user_id]="+this.idUser).then((res) => {
+          this.RespuestaApi = res.data.data
+          for (let i = 0; i < this.RespuestaApi.length; i++) {
+            let fechaCreated = new Date(this.RespuestaApi[i].attributes.created_at).toLocaleDateString("es-MX", options)
+            if(this.RespuestaApi[i].attributes.fre_cardiaca != null){
+              if (fechaCreated.length == 6) {
+                let dia = fechaCreated.split(' ')
+                fechaCreated = "0"+dia[0]+" "+dia[1]
+              }
+              this.DatosResultado.push({nombre: "Frecuencia cardiaca", numero: this.RespuestaApi[i].attributes.fre_cardiaca,
+              medida: "lpm", fecha: fechaCreated, id: this.RespuestaApi[i].id})
+            }    
+          }
+        })    
+      }  else if (this.nombreTabla == "saturación de oxígeno") {
+        apiClient.get("/api/v1/medicions?filter[user_id]="+this.idUser).then((res) => {
+          this.RespuestaApi = res.data.data
+          for (let i = 0; i < this.RespuestaApi.length; i++) {
+            let fechaCreated = new Date(this.RespuestaApi[i].attributes.created_at).toLocaleDateString("es-MX", options)
+            if(this.RespuestaApi[i].attributes.oxigeno != null){
+              if (fechaCreated.length == 6) {
+                let dia = fechaCreated.split(' ')
+                fechaCreated = "0"+dia[0]+" "+dia[1]
+              }
+              this.DatosResultado.push({nombre: "Saturación de oxígeno", numero: this.RespuestaApi[i].attributes.oxigeno,
+              medida: "SPO2", fecha: fechaCreated, id: this.RespuestaApi[i].id})
+            }    
+          }
+        })    
+      }  else if (this.nombreTabla == "temperatura") {
+        apiClient.get("/api/v1/medicions?filter[user_id]="+this.idUser).then((res) => {
+          this.RespuestaApi = res.data.data
+          for (let i = 0; i < this.RespuestaApi.length; i++) {
+            let fechaCreated = new Date(this.RespuestaApi[i].attributes.created_at).toLocaleDateString("es-MX", options)
+            if(this.RespuestaApi[i].attributes.temperatura != null){
+              if (fechaCreated.length == 6) {
+                let dia = fechaCreated.split(' ')
+                fechaCreated = "0"+dia[0]+" "+dia[1]
+              }
+              this.DatosResultado.push({nombre: "Temperatura", numero: this.RespuestaApi[i].attributes.temperatura,
+              medida: " ", fecha: fechaCreated, id: this.RespuestaApi[i].id})
+            }    
+          }
+        })    
+      }    
     }
   },
   components: {
