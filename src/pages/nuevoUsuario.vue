@@ -70,7 +70,7 @@ export default {
             type: "users",
             attributes: {
               name: this.text,
-              cuenta_id: 1,//this.cuenta,
+              cuenta_id: this.cuenta,
               telefono: this.telefono,
               email: this.correo,
               sexo: this.genero,
@@ -88,7 +88,7 @@ export default {
           }).then(()=>{
           })
           this.$q.notify('Usuario guardado')
-          this.$router.go(-1)
+          this.$router.replace('/usuarios')
         });
     },
     obtenerUsuario(){
@@ -109,7 +109,7 @@ export default {
           attributes: {
             name: this.text,
             email: this.correo,
-            cuenta_id: 1,//this.cuenta,
+            cuenta_id: this.cuenta,
             telefono: this.telefono,
             sexo: this.genero,
             fecha_nacimiento: this.Fecha
@@ -118,7 +118,7 @@ export default {
       })
       .then((res) => {         
         this.$q.notify('Usuario guardado')
-        this.$router.go(-1)
+        this.$router.replace("/usuarios")
       })
     }
   },

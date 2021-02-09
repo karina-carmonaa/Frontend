@@ -98,7 +98,7 @@
 <script>
 import apiClient from '../service/api.js';
 import Footer from 'components/piePagina.vue'
-import tipo from 'pages/IngresosNuevos.vue'
+import { date } from 'quasar'
 
 let fileData
 export default {
@@ -118,7 +118,6 @@ export default {
       tipoMinusculas: this.tipo.toLowerCase(),
       idHistorial: null,
       dialog: false,
-      //agregarDocEstudio: 2
     }
   },
   components:{
@@ -133,7 +132,7 @@ export default {
       if (this.receta == true && this.path.length != 0) {
         this.dialog=true
       }else{
-        this.guardarConsulta(0)
+        this.guardarConsulta()
       }
     },
     atras(){ this.$router.go(-1) },  
@@ -305,6 +304,7 @@ export default {
     },
     eliminar(id, nombre, idImagen){
       this.imagenes.splice(id, 1)
+      this.path.splice(id,1)
       if(idImagen!= undefined ){
         fileData = new FormData()
         fileData.append("actualizar", true)
@@ -316,7 +316,11 @@ export default {
   },
   mounted() {
     this.idHistorial = localStorage.getItem('id_historial');
-    this.ObtenerDatos();
+    this.ObtenerDatos();  
+    let [month, date, year]    = ( new Date() ).toLocaleDateString().split("/")
+    if(month.length == 1){ month = "0"+month }
+    if(date.length == 1){ date = "0"+date }
+    this.fecha = year + "-" + date + "-" + month ;  
   },
 }
 </script>

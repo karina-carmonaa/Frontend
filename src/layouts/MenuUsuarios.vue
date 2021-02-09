@@ -70,12 +70,12 @@
                     A qué médico acudir
                   </q-item-section>
                   </q-item> -->
-                  <q-item exact clickable v-ripple>
+                  <q-item @click="cerrar" exact clickable v-ripple>
                     <q-item-section avatar>
                       <q-icon name="list" />
                     </q-item-section>
                     <q-item-section>
-                      Configuraciones
+                      Cerrar Sesión
                     </q-item-section>
                   </q-item>
                 </q-list>
@@ -83,7 +83,7 @@
 
               <q-img class="absolute-top bg-cyan-8"  style="height: 100px">
               <div class="absolute-bottom bg-transparent">
-                  <div class="text-weight-bold">Nombre del usuario</div>
+                  <div class="text-weight-bold">Ajustes</div>
                   <div></div>
                 </div>
               </q-img>
@@ -105,6 +105,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 export default {
   name: 'MenuUsuario',
   data(){
@@ -112,7 +113,16 @@ export default {
       leftDrawerOpen:false,
       carga: false
     }
-  }
+  },
+  methods: {
+    ...mapActions({
+      logout: 'auth/logout'
+    }),
+    async cerrar(){
+      await this.logout();
+      this.$router.replace("/")
+    }
+  },
 }
 </script>
  <style lang="scss">

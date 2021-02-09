@@ -16,11 +16,86 @@
               </q-toolbar>
             </q-header>
             <q-page-container class="q-ma-lg flex column">
-              <div class="text-center col">
+              <div class="text-center col"> 
+                <div class="text-center col" v-if="CargaPeso">
+                  <line-chart :chartData="chartdataPeso"
+                  :options="options" class="graficas"/>
+                  <q-item v-ripple clickable @click="MostrarDatos('peso')" class="bg-yellow-7">
+                    <q-item-section>
+                      <q-item-label> Mostrar todos los datos </q-item-label>
+                    </q-item-section>
+                    <q-item-section class="col-2">
+                      <q-icon name="keyboard_arrow_right" size="sm" />
+                    </q-item-section>
+                  </q-item>  
+                </div>  
+                <br /><br />
+                <div class="text-center col" v-if="CargaIMC">
+                  <line-chart :chartData="chartdataIMC"
+                  :options="options" class="graficas"/>
+                  <q-item v-ripple clickable @click="MostrarDatos('IMC')" class="bg-orange-6">
+                    <q-item-section>
+                      <q-item-label> Mostrar todos los datos </q-item-label>
+                    </q-item-section>
+                    <q-item-section class="col-2">
+                      <q-icon name="keyboard_arrow_right" size="sm" />
+                    </q-item-section>
+                  </q-item>  
+                </div>    
+                <br /><br />
+                <div class="text-center col" v-if="CargaAzucar">
+                  <line-chart :chartData="chartdataAzucar"
+                  :options="options" class="graficas"/>
+                  <q-item v-ripple clickable @click="MostrarDatos('azúcar')" class="bg-deep-orange-6">
+                    <q-item-section>
+                      <q-item-label> Mostrar todos los datos </q-item-label>
+                    </q-item-section>
+                    <q-item-section class="col-2">
+                      <q-icon name="keyboard_arrow_right" size="sm" />
+                    </q-item-section>
+                  </q-item>  
+                </div>  
+                <br /><br />
+                <div class="text-center col" v-if="CargaFreCar">
+                  <line-chart :chartData="chartdataFreCar" :options="options" class="graficas"/>
+                  <q-item class="bg-pink-5" clickable @click="MostrarDatos('frecuencia cardiaca')">
+                    <q-item-section>
+                      <q-item-label>Mostrar todos los datos</q-item-label>
+                    </q-item-section>
+                    <q-item-section class="col-2">
+                      <q-icon name="keyboard_arrow_right" size="sm" />
+                    </q-item-section>
+                  </q-item>
+                </div>   
+                <br /><br />
+                <div class="text-center col" v-if="CargaTemp">
+                  <line-chart :chartData="chartdataTemp" :options="options" class="graficas"/>
+                  <q-item class="bg-purple-7" clickable @click="MostrarDatos('temperatura')">
+                    <q-item-section>
+                      <q-item-label>Mostrar todos los datos</q-item-label>
+                    </q-item-section>
+                    <q-item-section class="col-2">
+                      <q-icon name="keyboard_arrow_right" size="sm" />
+                    </q-item-section>
+                  </q-item>
+                </div>  
+                <br /><br />
+                <div class="text-center col" v-if="CargaOxigeno">
+                  <line-chart :chartData="chartdataOxigeno" :options="options" class="graficas"/>
+                  <q-item class="bg-deep-purple-8" clickable @click="MostrarDatos('saturación de oxígeno')">
+                    <q-item-section>
+                      <q-item-label>Mostrar todos los datos</q-item-label>
+                    </q-item-section>
+                    <q-item-section class="col-2">
+                      <q-icon name="keyboard_arrow_right" size="sm" />
+                    </q-item-section>
+                  </q-item>
+                </div>   
+                <br /><br />
                 <div class="text-center col" v-if="CargaTension">
                   <line-chart :chartData="chartdataTension"
                   :options="options" class="graficas"/>
-                  <q-item v-ripple clickable @click="MostrarDatos('presión arterial')" class="bg-grey-3">
+                  <q-item v-ripple clickable @click="MostrarDatos('presión arterial')" class="bg-indigo-8">
                     <q-item-section>
                       <q-item-label> Mostrar todos los datos </q-item-label>
                     </q-item-section>
@@ -28,76 +103,7 @@
                       <q-icon name="keyboard_arrow_right" size="sm" />
                     </q-item-section>
                   </q-item>  
-                </div>  
-                <div class="text-center col" v-if="CargaPeso">
-                  <line-chart :chartData="chartdataPeso"
-                  :options="options" class="graficas"/>
-                  <q-item v-ripple clickable @click="MostrarDatos('peso')" class="bg-grey-3">
-                    <q-item-section>
-                      <q-item-label> Mostrar todos los datos </q-item-label>
-                    </q-item-section>
-                    <q-item-section class="col-2">
-                      <q-icon name="keyboard_arrow_right" size="sm" />
-                    </q-item-section>
-                  </q-item>  
-                </div>     
-                <div class="text-center col" v-if="CargaAzucar">
-                  <line-chart :chartData="chartdataAzucar"
-                  :options="options" class="graficas"/>
-                  <q-item v-ripple clickable @click="MostrarDatos('azúcar')" class="bg-grey-3">
-                    <q-item-section>
-                      <q-item-label> Mostrar todos los datos </q-item-label>
-                    </q-item-section>
-                    <q-item-section class="col-2">
-                      <q-icon name="keyboard_arrow_right" size="sm" />
-                    </q-item-section>
-                  </q-item>  
-                </div>  
-                <div class="text-center col" v-if="CargaIMC">
-                  <line-chart :chartData="chartdataIMC"
-                  :options="options" class="graficas"/>
-                  <q-item v-ripple clickable @click="MostrarDatos('IMC')" class="bg-grey-3">
-                    <q-item-section>
-                      <q-item-label> Mostrar todos los datos </q-item-label>
-                    </q-item-section>
-                    <q-item-section class="col-2">
-                      <q-icon name="keyboard_arrow_right" size="sm" />
-                    </q-item-section>
-                  </q-item>  
                 </div> 
-                <div class="text-center col" v-if="CargaFreCar">
-                  <line-chart :chartData="chartdataFreCar" :options="options" class="graficas"/>
-                  <q-item class="bg-grey-3" clickable @click="MostrarDatos('frecuencia cardiaca')">
-                    <q-item-section>
-                      <q-item-label>Mostrar todos los datos</q-item-label>
-                    </q-item-section>
-                    <q-item-section class="col-2">
-                      <q-icon name="keyboard_arrow_right" size="sm" />
-                    </q-item-section>
-                  </q-item>
-                </div>   
-                <div class="text-center col" v-if="CargaTemp">
-                  <line-chart :chartData="chartdataTemp" :options="options" class="graficas"/>
-                  <q-item class="bg-grey-3" clickable @click="MostrarDatos('temperatura')">
-                    <q-item-section>
-                      <q-item-label>Mostrar todos los datos</q-item-label>
-                    </q-item-section>
-                    <q-item-section class="col-2">
-                      <q-icon name="keyboard_arrow_right" size="sm" />
-                    </q-item-section>
-                  </q-item>
-                </div>  
-                <div class="text-center col" v-if="CargaOxigeno">
-                  <line-chart :chartData="chartdataOxigeno" :options="options" class="graficas"/>
-                  <q-item class="bg-grey-3" clickable @click="MostrarDatos('saturación de oxígeno')">
-                    <q-item-section>
-                      <q-item-label>Mostrar todos los datos</q-item-label>
-                    </q-item-section>
-                    <q-item-section class="col-2">
-                      <q-icon name="keyboard_arrow_right" size="sm" />
-                    </q-item-section>
-                  </q-item>
-                </div>   
               </div>                        
               <q-footer>
                 <Footer />
@@ -142,7 +148,7 @@ export default {
           datasets: [{
             label: 'Peso',
             backgroundColor: '#FC2525',
-            borderColor: '#FC2525',
+            borderColor: '#ebe706',
             data: dataRespuestaPeso,           
 				    fill: false
           }]
@@ -152,7 +158,7 @@ export default {
           datasets: [{
             label: 'Presión arterial',
             backgroundColor: '#FC2525',
-            borderColor: '#FC2525',
+            borderColor: ' #1b1b5c',
             data: dataRespuestaTension,           
 				    fill: false
           }]
@@ -162,7 +168,7 @@ export default {
           datasets: [{
             label: 'Azucar',
             backgroundColor: '#FC2525',
-            borderColor: '#FC2525',
+            borderColor: ' #f86356',
             data: dataRespuestaAzucar,           
 				    fill: false
           }]
@@ -172,7 +178,7 @@ export default {
           datasets: [{
             label: 'IMC',
             backgroundColor: '#FC2525',
-            borderColor: '#FC2525',
+            borderColor: '#ff9342',
             data: dataRespuestaIMC,           
 				    fill: false
           }]
@@ -182,7 +188,7 @@ export default {
           datasets: [{
             label: 'Saturación de oxígeno',
             backgroundColor: '#FC2525',
-            borderColor: '#FC2525',
+            borderColor: ' #63206c',
             data: dataRespuestaOxigeno,
             fill: false
           }]
@@ -192,7 +198,7 @@ export default {
           datasets: [{
             label: 'Frecuencia cardiaca',
             backgroundColor: '#FC2525',
-            borderColor: '#FC2525',
+            borderColor: '#d33d66',
             data: dataRespuestaFreCar,           
 				    fill: false
           }]
@@ -202,7 +208,7 @@ export default {
           datasets: [{
             label: 'Temperatura',
             backgroundColor: '#FC2525',
-            borderColor: '#FC2525',
+            borderColor: '#9f276f',
             data: dataRespuestaTemp,           
 				    fill: false
           }]

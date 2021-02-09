@@ -1,7 +1,7 @@
 <template>
     <div class="bg-paginas padding-items">
-        <q-layout view="lHh Lpr lff" class="shadow-2 rounded-borders">
-            <q-header class="bg-cyan-8 q-px-sm q-pt-md q-mb-md">
+        <q-layout view="lHh Lpr lff" class="shadow-2 rounded-borders"> 
+          <q-header class="bg-cyan-8 q-px-sm q-pt-md q-mb-md">
               <q-toolbar>
                 <q-btn flat  dense size="sm" round @click="atras" class="platform-ios-only"
                   icon="arrow_back_ios"
@@ -13,27 +13,27 @@
                   Personalizado
                 </span>
               </q-toolbar>
-            </q-header>
-            <q-page-container class="column col">
+            </q-header>           
+            <q-page-container class="column col espacio">
               <div class="bg-input col-12 q-mt-lg   ">
-                  <q-item clickable @click="doneEl = false" v-ripple dense>
+                  <q-item @click="doneEl = false" dense>
                     <q-item-section>Frecuencia</q-item-section>
-                    <q-item-section side>
+                    <q-item-section>
                       <q-select borderless v-model="model" :options="options"/>
                     </q-item-section>
                   </q-item>
                   <q-separator inset />
-                  <q-item clickable v-ripple >
+                  <q-item>
                     <q-item-section avatar>
                       <q-item-label>Cada</q-item-label>
                     </q-item-section>
                     <q-item-section >
                       <q-select borderless dense v-model="dias" :options="diasOp"/>
                     </q-item-section>
-                    <q-item-section>
-                      <q-item-label v-if="dias === 1 "> {{model.unitario}} </q-item-label>
+                    <q-item-section class="q-pl-xl">
+                      <q-item-label v-if="dias == 1 "> {{model.unitario}} </q-item-label>
                       <q-item-label v-else-if="dias != null && dias != 0 "> {{model.multiple}}  </q-item-label>
-                    </q-item-section>       
+                    </q-item-section> 
                   </q-item>
               </div>
               <div class="text-grey-7 q-pt-md q-ml-sm q-mr-lg" v-if="dias != null || model != null">
@@ -131,7 +131,7 @@
                     </span>
                   </div>
                 </div> 
-              </div>    
+              </div>   
               <q-footer>
                 <Footer />
               </q-footer>
@@ -171,8 +171,8 @@ export default {
     name: 'Personalizado',
     data() {
       return {
-        dias: null,
-        model: null,
+        dias: 1,
+        model: {label: 'Diariamente', value: 1, unitario: 'día', multiple: 'días' },
         diaMesEl: {label: 'martes', done: true},
         diaSemana: ["domingo"],
         doneCada:true,
@@ -214,11 +214,7 @@ export default {
         ]
       }
     },
-    methods:{     
-        atras(){
-          
-          this.$router.go(-1)
-        },
+    methods:{ 
         cambiarCheck(index){
           if(index==1){
             this.doneCada = true
@@ -283,10 +279,19 @@ export default {
             item.color= 'indigo-5'
           }        
           return item.done = !item.done
+        },
+        atras() {
+          if (this.dias == 1) this.$emit('ActualizandoValores', this.dias, this.model.unitario, true) 
+            else  this.$emit('ActualizandoValores', this.dias, this.model.multiple, true) 
         }
     },
   components: {
     Footer
+  },
+  props:{
+    dia: Number,
+    cada:String,
+    recordatorio: Boolean
   }
 }
 </script>
@@ -302,10 +307,12 @@ export default {
       .q-field__native{
       padding: 0px 0px 0px 50px;
       }
-    }
-    
+    }    
     .color{
       color: #616161;
       background-color: cadetblue;
+    }
+    .espacio{
+      padding-top: 20%;
     }
 </style>

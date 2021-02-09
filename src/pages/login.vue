@@ -1,71 +1,59 @@
+
 <template>
-  <q-page class="flex column">
+  <q-page class="flex column"> 
     <div class="col q-pt-lg q-px-md"></div>
     <div class="col text-center">
       <q-img src="~assets/salud.png" style="max-width: 300px; height: 150px;" contain ></q-img>
       <div class="q-gutter-y-md  q-px-xl">
         <form @submit.prevent="inicio">
-          <q-input v-model="email" label="Correo electrónico">
+          <q-input v-model="form.email" label="Correo electrónico">
             <template v-slot:append>
               <q-icon name="person" />
             </template>
           </q-input>
-          <q-input v-model="password" :type="isPwd ? 'password' : 'text'" label="Contraseña">
+          <q-input v-model="form.password" :type="isPwd ? 'password' : 'text'" label="Contraseña">
             <template v-slot:append>
               <q-icon :name="isPwd ? 'visibility_off' : 'visibility'"
                 class="cursor-pointer" @click="isPwd = !isPwd" />
             </template>
           </q-input>
-          <span class="text-right text-grey-9" to="/usuarios" flat :ripple="false" 
+          <span class="text-right text-grey-9" to="/usuarios" flat  
             no-caps no-wrap >¿Olvidaste tu contraseña? </span>
           <br> <br>
           <q-btn label="Iniciar" type="iniciar" class="full-width" rounded color="blue"/>
-          </form>
-          <div class="q-pt-xl text-center text-grey-9">
-            <span class="text-center"> ¿No tienes una cuenta?
-              <q-btn label="Registrate" flat :ripple="false" no-caps no-wrap to="/registro"  />
-            </span>
-          </div>
+        </form>
+        <div class="q-pt-xl text-center text-grey-9">
+          <span class="text-center"> ¿No tienes una cuenta?
+            <q-btn label="Registrate" flat no-caps no-wrap to="/registro"  />
+          </span>
+        </div>
       </div>
     </div>
   </q-page>
-</template>
+</template>  
 
 <script>
-import apiClient from '../service/api.js';
-import Cookies from 'js-cookie'
+import { mapActions } from 'vuex'
 
 export default {
   name: 'login',
   data() {
     return {
-      email: 'alex@codecourse.com',
-      password: 'ilovecats',
+      form: {
+          email: 'ejemploFinal1@ejemplo.com',
+          password: '12345678',
+        },
       isPwd: true,
       user: {}
     }
   },
   methods: {
-    inicio(){
-      this.$router.push('/usuarios')
-    /* apiClient.get('/sanctum/csrf-cookie')
-      .then((res) => {
-        console.log(res)
-        console.log(res.config.xsrfCookieName)
-        Cookies.set("X-XSRF-TOKEN", Cookies.get("XSRF-TOKEN"))
-        console.log(Cookies.get("XSRF-TOKEN"))
-        apiClient.post('/login' , {
-          email: this.email,
-          password: this.password
-          //device_name: 'karina'
-        }).then(response => {
-          this.user = response.data
-          localStorage.setItem('id_cuenta',this.user.cuenta_id)
-          this.$router.push('/usuarios')
-          console.log(response.status)
-        })
-        .catch(error => console.log(error));          
-      }); */
+    ...mapActions({
+      login: 'auth/login'
+    }),
+    async inicio(){
+      await this.login(this.form)
+      this.$router.replace("/usuarios")
     }
   }
 }

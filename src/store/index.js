@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import auth from './auth'
 
 // import example from './module-example'
 
@@ -20,7 +21,7 @@ export default function (/* { ssrContext } */) {
       carga:true
     },
     modules: {
-      // example
+      auth
     },
 
     // enable strict mode (adds overhead!)

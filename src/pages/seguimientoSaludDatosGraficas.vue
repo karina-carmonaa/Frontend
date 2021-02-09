@@ -14,9 +14,9 @@
       </q-header>
       <q-page-container class="row q-ma-lg">         
         <q-list class="col-12" bordered padding separator v-for="(datos, index) in DatosResultado" :key="index" >
-          <q-item >
+          <q-item class="bg-grey-6" >
             <q-item-section avatar top >
-              <q-icon name="accessibility_new" size="xl"/>
+              <q-icon name="accessibility_new" size="xl" :class="datos.color" />
             </q-item-section>
             <q-item-section top>
               <q-item-label lines="1">
@@ -216,7 +216,7 @@ export default {
     },
     DatosTablas(){
       if (this.nombreTabla == "presión arterial") {        
-        apiClient.get("/api/v1/medicions?filter[user_id]="+this.idUser).then((res) => {
+        apiClient.get("/api/v1/users/"+this.idUser+"/medicions").then((res) => {
           this.RespuestaApi = res.data.data
           for (let i = 0; i < this.RespuestaApi.length; i++) {
             let fechaCreated = new Date(this.RespuestaApi[i].attributes.created_at).toLocaleDateString("es-MX", options)
@@ -226,12 +226,13 @@ export default {
                 fechaCreated = "0"+dia[0]+" "+dia[1]
               }
               this.DatosResultado.push({nombre: "Presión arterial", numero: this.RespuestaApi[i].attributes.presion_arterial +
-              " / "+ this.RespuestaApi[i].attributes.presion_arterial2, medida: "mmHg", fecha: fechaCreated, id: this.RespuestaApi[i].id})
+              " / "+ this.RespuestaApi[i].attributes.presion_arterial2, medida: "mmHg", fecha: fechaCreated, id: this.RespuestaApi[i].id,
+              color: "colorPreArte"})
             }       
           }
         })        
       } else if (this.nombreTabla == "peso") {    
-        apiClient.get("/api/v1/medicions?filter[user_id]="+this.idUser).then((res) => {
+        apiClient.get("/api/v1/users/"+this.idUser+"/medicions").then((res) => {
           this.RespuestaApi = res.data.data
           for (let i = 0; i < this.RespuestaApi.length; i++) {
             let fechaCreated = new Date(this.RespuestaApi[i].attributes.created_at).toLocaleDateString("es-MX", options)
@@ -241,12 +242,12 @@ export default {
                 fechaCreated = "0"+dia[0]+" "+dia[1]
               }
               this.DatosResultado.push({nombre: "Peso", numero: this.RespuestaApi[i].attributes.peso,
-              medida: "kg", fecha: fechaCreated, id: this.RespuestaApi[i].id})
+              medida: "kg", fecha: fechaCreated, id: this.RespuestaApi[i].id, color: "colorPeso"})
             }    
           }
         })                
       } else  if (this.nombreTabla == "azúcar") {  
-        apiClient.get("/api/v1/medicions?filter[user_id]="+this.idUser).then((res) => {
+        apiClient.get("/api/v1/users/"+this.idUser+"/medicions").then((res) => {
           this.RespuestaApi = res.data.data
           for (let i = 0; i < this.RespuestaApi.length; i++) {
             let fechaCreated = new Date(this.RespuestaApi[i].attributes.created_at).toLocaleDateString("es-MX", options)
@@ -256,12 +257,12 @@ export default {
                 fechaCreated = "0"+dia[0]+" "+dia[1]
               }
               this.DatosResultado.push({nombre: "Azúcar", numero: this.RespuestaApi[i].attributes.azucar,
-              medida: "mg/dl", fecha: fechaCreated, id: this.RespuestaApi[i].id})
+              medida: "mg/dl", fecha: fechaCreated, id: this.RespuestaApi[i].id, color:"colorAzucar"})
             }    
           }
         })                        
       } else if (this.nombreTabla == "IMC") {
-        apiClient.get("/api/v1/medicions?filter[user_id]="+this.idUser).then((res) => {
+        apiClient.get("/api/v1/users/"+this.idUser+"/medicions").then((res) => {
           this.RespuestaApi = res.data.data
           for (let i = 0; i < this.RespuestaApi.length; i++) {
             let fechaCreated = new Date(this.RespuestaApi[i].attributes.created_at).toLocaleDateString("es-MX", options)
@@ -271,12 +272,12 @@ export default {
                 fechaCreated = "0"+dia[0]+" "+dia[1]
               }
               this.DatosResultado.push({nombre: "IMC", numero: this.RespuestaApi[i].attributes.imc,
-              medida: " ", fecha: fechaCreated, id: this.RespuestaApi[i].id})
+              medida: " ", fecha: fechaCreated, id: this.RespuestaApi[i].id, color: "colorIMC"})
             }    
           }
         })    
       }  else if (this.nombreTabla == "frecuencia cardiaca") {
-        apiClient.get("/api/v1/medicions?filter[user_id]="+this.idUser).then((res) => {
+        apiClient.get("/api/v1/users/"+this.idUser+"/medicions").then((res) => {
           this.RespuestaApi = res.data.data
           for (let i = 0; i < this.RespuestaApi.length; i++) {
             let fechaCreated = new Date(this.RespuestaApi[i].attributes.created_at).toLocaleDateString("es-MX", options)
@@ -286,12 +287,12 @@ export default {
                 fechaCreated = "0"+dia[0]+" "+dia[1]
               }
               this.DatosResultado.push({nombre: "Frecuencia cardiaca", numero: this.RespuestaApi[i].attributes.fre_cardiaca,
-              medida: "lpm", fecha: fechaCreated, id: this.RespuestaApi[i].id})
+              medida: "lpm", fecha: fechaCreated, id: this.RespuestaApi[i].id, color: "colorFreCar"})
             }    
           }
         })    
       }  else if (this.nombreTabla == "saturación de oxígeno") {
-        apiClient.get("/api/v1/medicions?filter[user_id]="+this.idUser).then((res) => {
+        apiClient.get("/api/v1/users/"+this.idUser+"/medicions").then((res) => {
           this.RespuestaApi = res.data.data
           for (let i = 0; i < this.RespuestaApi.length; i++) {
             let fechaCreated = new Date(this.RespuestaApi[i].attributes.created_at).toLocaleDateString("es-MX", options)
@@ -301,12 +302,12 @@ export default {
                 fechaCreated = "0"+dia[0]+" "+dia[1]
               }
               this.DatosResultado.push({nombre: "Saturación de oxígeno", numero: this.RespuestaApi[i].attributes.oxigeno,
-              medida: "SPO2", fecha: fechaCreated, id: this.RespuestaApi[i].id})
+              medida: "SPO2", fecha: fechaCreated, id: this.RespuestaApi[i].id, color: "colorOxigeno"})
             }    
           }
         })    
       }  else if (this.nombreTabla == "temperatura") {
-        apiClient.get("/api/v1/medicions?filter[user_id]="+this.idUser).then((res) => {
+        apiClient.get("/api/v1/users/"+this.idUser+"/medicions").then((res) => {
           this.RespuestaApi = res.data.data
           for (let i = 0; i < this.RespuestaApi.length; i++) {
             let fechaCreated = new Date(this.RespuestaApi[i].attributes.created_at).toLocaleDateString("es-MX", options)
@@ -316,7 +317,7 @@ export default {
                 fechaCreated = "0"+dia[0]+" "+dia[1]
               }
               this.DatosResultado.push({nombre: "Temperatura", numero: this.RespuestaApi[i].attributes.temperatura,
-              medida: " ", fecha: fechaCreated, id: this.RespuestaApi[i].id})
+              medida: " ", fecha: fechaCreated, id: this.RespuestaApi[i].id, color:"colorTempe"})
             }    
           }
         })    

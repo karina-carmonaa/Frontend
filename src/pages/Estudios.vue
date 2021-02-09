@@ -47,6 +47,7 @@
 <script>
 import Footer from 'components/piePagina.vue'
 import apiClient from '../service/api.js';
+
 export default {
   name: 'Estudios',
   data() {

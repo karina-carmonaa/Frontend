@@ -4,10 +4,10 @@
     <div class="col text-center">
       <div class="q-gutter-y-md  q-px-xl">
           <label class="text-h4 text-weight-light" > Registro</label>     
-        <q-input label="Correo electrónico" type="email" v-model="correo"/>
-        <q-input v-model="contra" type='password' label="Contraseña">         
+        <q-input label="Correo electrónico" type="email" v-model="form.email"/>
+        <q-input v-model="form.password" type='password' label="Contraseña">         
         </q-input>
-        <q-input bottom-slots v-model="confirmacion" :type="isPwd ? 'password' : 'text'"
+        <q-input bottom-slots v-model="form.password_confirmation" :type="isPwd ? 'password' : 'text'"
           label="Confirmar contraseña" v-on:blur ="confirmar" v-on:focus="limpiar">
           <template v-slot:after>
             <q-icon :name="isPwd ? 'visibility_off' : 'visibility'"
@@ -29,38 +29,46 @@
 </template>
 
 <script>
+
+import { mapActions } from 'vuex'
 export default {
-    name: 'regristro',
-    data() {
-        return {
-            contra: null,
-            isPwd: true,
-            confirmacion: null,
-            aceptado: true,
-            alert: false,
-            correo: null
-        }
-    },
+  name: 'regristro',
+  data() {
+    return {
+      form: {
+        password: null,
+        email: null,
+        password_confirmation: null
+      },
+      isPwd: true,
+      aceptado: true,
+      alert: false,
+    }
+  },
     methods: {
+      ...mapActions({
+        registro: 'auth/registro'
+      }),
         confirmar(){
-            if(this.contra != this.confirmacion){
+            if(this.form.password != this.form.password_confirmation){
               this.aceptado = false
             }else{
               this.aceptado = true
             }
         },
-        validar(){
-          if( this.contra == null || this.contra == '' ||
-          this.correo == null || this.correo == ''){
+        async validar(){
+          if( this.form.password == null || this.form.password_confirmation == '' ||
+          this.form.email == null || this.form.email == ''){
             this.alert = true
           }else{
             this.alert = false
-            this.$router.push('/nuevoUsuario/0')
-          }
-          
+            await this.registro(this.form)
+            //console.log("user: ",this.$store.getters.["auth/user"])
+            this.$router.replace('/nuevoUsuario/'+localStorage.getItem("id_usuario"))
+          }          
         },
         limpiar(){
-          this.confirmacion = null
+          this.form.password_confirmation = null
           this.aceptado= true
         }
     }

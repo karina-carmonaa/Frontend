@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-paginas">
+    <div class="bg-paginas"  v-if="recordatorio">
         <q-layout view="lHh Lpr lff" class="shadow-2 rounded-borders">
             <q-header class="bg-cyan-8 q-px-sm q-pt-md q-mb-md">
               <q-toolbar>
@@ -9,7 +9,8 @@
                   Agregar recordatorio
                 </span>
                 <span v-else class="q-subtitle-2 absolute-center "> Editar recordatorio </span>
-                <q-btn flat label="Guardar" v-if="id == (0).toString() " @click="guardarMedicamento" no-caps class="absolute-right"/>
+               <!--  <q-btn flat label="Guardar" v-if="id == (0).toString() " @click="guardarMedicamento" no-caps class="absolute-right"/> -->
+               <q-btn flat label="Guardar" v-if="id == (0).toString() " @click="ejemplo" no-caps class="absolute-right"/>
                 <q-btn flat label="Guardar" v-else @click="editarMedicamento" no-caps class="absolute-right"/>
               </q-toolbar>
             </q-header>
@@ -18,7 +19,7 @@
                 <p v-if="validacion" class=" text-center">Favor de llenar todos los datos</p>      
                 <q-input class="text-center" bottom-slots filled dense v-model="medicamento">
                   <template v-slot:before>
-                    <p class="text-caption margen text-black">Medicamento:</p>
+                    <p class="text-caption no-margin text-black">Medicamento:</p>
                   </template> 
                 </q-input>
                     <q-item class="text-center">
@@ -31,12 +32,20 @@
                       <q-item-section >
                         <q-select borderless filled dense v-model="horas" @input="borrarHorarios" :options="horasOps"/>
                       </q-item-section>
-                      <q-item-section >
+                      <q-item-section v-if="typeof horas != 'string'" >
                         <q-item-label v-if="horas == 1 || horas == null "> hora </q-item-label>
                         <q-item-label v-else-if="horas > 1 "> horas  </q-item-label>
                       </q-item-section>       
                     </q-item>
                     <br v-if="horas == 24 || horas == null">
+                    <div v-if="typeof horas === 'string'">
+                      <br />
+                      <q-input v-model="Horas24" filled type="time" class="text-center" bottom-slots dense>
+                        <template v-slot:before>
+                          <p class="text-caption no-margin text-black">Horario: </p>
+                        </template>
+                      </q-input>
+                    </div>                    
                     <div v-if="horas > 2  && horas < 13 " class="q-pb-sm" >
                       <p class="text-center q-mt-md">
                         Horarios sugeridos: 
@@ -47,19 +56,22 @@
                       <q-select v-if="horas == 12" borderless dense  filled v-model="horarios" :options="horariosSugeridos12Horas"/> 
                       <br>
                     </div>
-                      <div class="col-6 q-pr-xl">
+                    <div v-if="typeof horas != 'string'" class="col-6 q-pr-xl">
                       <q-select @input="onChange" class="text-center" bottom-slots filled dense v-model="duracion "
                       :options="cantidadDias" transition-show="jump-up" transition-hide="jump-up" >
                         <template v-slot:before>
-                          <p class="text-caption margen text-black " >Duración:</p>
+                          <p class="text-caption no-margin text-black " >Duración:</p>
                         </template> 
                         <template v-slot:after>
-                          <p v-if="duracion == 1" class="text-caption margen text-black"> día</p>
-                          <p v-else class="text-caption margen text-black"> días</p>
+                          <p v-if="duracion == 1" class="text-caption no-margin text-black"> día</p>
+                          <p v-else class="text-caption no-margin text-black"> días</p>
                         </template>
                       </q-select>
                     </div>
-                
+                <q-input type="time" v-model="tiempo" />
+                <q-btn color="primary" label="Get Picture" @click="captureImage" />
+
+                <img :src="imageSrc">
                 <q-input v-model="dateInicio" filled type="date" today transition-show="scale" transition-hide="scale"
                     mask="date" label="Fecha de inicio"  stack-label input-class="text-center" />
                     <br>                  
@@ -73,12 +85,14 @@
                   no-caps rounded unelevated color="red-5" >  
                 </q-btn>
               </div>
-              
               <q-footer>
                 <Footer />
               </q-footer>
             </q-page-container>
         </q-layout>
+    </div>
+    <div v-else>
+      <datos :dia="datosDia" :cada="datosCada" :recordatorio="recordatorio" @ActualizandoValores="ActualizarValores"/> 
     </div>
 </template>
 
@@ -86,6 +100,8 @@
 import { date } from 'quasar'
 import Footer from 'components/piePagina.vue'
 import apiClient from '../service/api.js';
+import datos from 'pages/personalizado.vue'
+
 const cantidad = []
 for (let i = 1; i < 32; i++) {
   cantidad.push(i)  
@@ -94,6 +110,11 @@ export default {
     name: 'nuevoRecordatorio',
     data() {
       return {
+        imageSrc: '',
+        tiempo: null,
+        datosDia: 1,
+        datosCada: "1",
+        recordatorio: true,
         validacion: false,
         horariosSugeridos4Horas: [
           { label: '8:00 am, 12:00 pm, 4:00 pm, 8:00 pm', value: '8,12,16,20' },
@@ -131,6 +152,7 @@ export default {
         horas: null,
         frecuencia: null,
         cantidadDias: cantidad,
+        Horas24: null,
         text: null,
         duracion: null,
         horarios: null,
@@ -140,8 +162,8 @@ export default {
         activar: "",
         ResMedi: null,
         frecuenciaOps: ['1/4','1/2','1','2','3','4'],
-        horasOps: ['4','6','8','12','24','Elegir otro horario'],
-        idHistorial: localStorage.getItem('id_historial')
+        horasOps: [4,6,8,12,24,'Elegir otro horario'],
+        idHistorial: localStorage.getItem('id_historial'),
       }
     },
     methods:{
@@ -153,9 +175,9 @@ export default {
         this.$router.go(-1)
       },
       borrarHorarios(){
-        this.horarios = null
+        //this.horarios = null
         if (this.horas == "Elegir otro horario"){
-          this.$router.push('/personalizado')
+          this.recordatorio = false
         }
       },
       fechaActual(){
@@ -177,8 +199,7 @@ export default {
       guardarMedicamento(){
         if(this.repetir == false) this.activar = "0"
           else this.activar = "1"
-        if(this.medicamento != '' && this.duracion != null && this.horarios != null 
-          && this.frecuencia != null && this.horas != null) {
+        if(this.medicamento != '' && this.duracion != null && this.frecuencia != null && this.horas != null) {
             this.validacion = false
             apiClient.post("/api/v1/medicamentos", {
               data: {
@@ -224,9 +245,9 @@ export default {
       editarMedicamento(){            
         if(this.repetir == false) this.activar = "0"
           else this.activar = "1"    
-        if(this.medicamento != '' && this.duracion != null && this.horarios != null 
-          && this.frecuencia != null && this.horas != null) {
+        if(this.medicamento != '' && this.duracion != null && this.frecuencia != null && this.horas != null) {
           this.validacion = false
+          console.log(this.horarios)
           apiClient.patch("/api/v1/medicamentos/"+this.id, {
             data: {
               type: "medicamentos",
@@ -241,7 +262,7 @@ export default {
                 frecuencia: this.horarios.label,
                 cada: this.frecuencia,
                 hora: this.horas,
-                activar: this.activar
+                activar: this.activar,
               },
             },
           }).then((res) => {
@@ -251,12 +272,66 @@ export default {
         } else{
           this.validacion = true
           }
-      }
+      },
+      atrasPersonal(){
+        this.recordatorio = true
+      },
+      ActualizarValores(newValue, valor2, valor3) {
+        if(newValue == 1) this.horas = valor2
+          else this.horas = newValue+" "+valor2
+        this.recordatorio = valor3
+      },
+      ejemplo(){
+        //console.log(this.dateInicio, this.tiempo, this.horarios)
+        //let tiempo_dia = new Date((this.dateInicio+" "+this.tiempo).replace(/-/g,"/")).getTime();
+        //console.log(tiempo_dia)
+        /*cordova.plugins.notification.local.hasPermission(function(granted){
+          if(granted == true) ActivarRecordatorio(1,"prueba titulo 1","prueba mensaje 1", "1611260760000")
+            else {
+              cordova.plugins.notification.local.registerPermission(function(granted){
+                if(granted == true) ActivarRecordatorio(1,"prueba titulo 1","prueba mensaje 1", "1611260760000")
+                  else navigator.notification.alert("No tiene permiso")
+              });              
+            }
+        });*/
+        cordova.plugins.notification.local.schedule({
+          title: 'My first notification',
+          text: 'Thats pretty easy...',
+          foreground: true
+        });
+      },
+      ActivarRecordatorio(id, titulo, mensaje, dia_hora){
+        cordava.plugins.notification.local.schedule({
+          id: id,
+          title: titulo,
+          message: mensaje,
+          at: dia_hora
+        })
+        let arreglo = [id, titulo, mensaje, dia_hora]
+        info.data[info.data.length] = arreglo
+        localStorage.setItem("rp_data", JSON.stringify(info))
+
+        navigator.notification.alert("exito")
+      },      
+      captureImage () {
+        Navigator.camera.getPicture(
+          data => { // on success
+            this.imageSrc = `data:image/jpeg;base64,${data}`
+          },
+          () => { // on fail
+            this.$q.notify('Could not access device camera.')
+          },
+          {
+            // camera options
+          }
+        )
+      },
     },
   components: {
-    Footer
+    Footer, datos
   },
   mounted() {
+    //console.log(this.datosGeneral)
     this.fechaActual(); 
     if(this.id != 0){
       this.obtenerMedicamento()
@@ -265,13 +340,3 @@ export default {
 }
 </script>
 
-<style lang="scss">
-  .margen{
-    margin: 0%;
-  }
-  .padding{
-    .q-item{
-      padding: 0px;
-    }
-  }
-</style>

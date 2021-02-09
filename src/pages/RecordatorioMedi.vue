@@ -62,9 +62,9 @@
 </template>
 
 <script>
-import axios from "axios";
-axios.defaults.baseURL = "http://agemed.test/api/v1";
+import apiClient from '../service/api.js'
 import Footer from 'components/piePagina.vue'
+
 export default {
     name: 'RecordatorioMedi',
     data() {
@@ -96,9 +96,9 @@ export default {
         },
         obtenerMedicamentos(){    
           let idUsuario = JSON.parse(localStorage.getItem('id_usuario'))
-          axios.get("/users/"+idUsuario +"/historial").then((res) => {             
+          apiClient.get("/api/v1/users/"+idUsuario +"/historial").then((res) => {             
             this.DatosHistorial = res.data.data;
-            axios.get(this.DatosHistorial.relationships.medicamentos.links.related)
+            apiClient.get(this.DatosHistorial.relationships.medicamentos.links.related)
               .then((respuesta) => {
                 this.ListaMedicamentos = respuesta.data.data
                 this.tam = this.ListaMedicamentos.length

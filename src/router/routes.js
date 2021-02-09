@@ -13,14 +13,14 @@ const routes = [
     path: '/usuariosInico',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: '/usuarios', component: () => import('pages/usuarios.vue') },
-      {path: '/EstadoHoyEjemplo', component: () => import('pages/EstadoHoyEjemplo.vue')}
     ]
   },
   {
     path: '/Menu',
     component: ()  => import('layouts/MenuUsuarios.vue'),
     children: [
+      { path: '/usuarios', component: () => import('pages/usuarios.vue') },
+      {path: '/EstadoHoyEjemplo', component: () => import('pages/EstadoHoyEjemplo.vue')},
       {path: '/menuUsuario', component: () => import('pages/menuUsuario.vue')},
     ]
   },

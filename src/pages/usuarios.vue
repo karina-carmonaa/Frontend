@@ -31,7 +31,6 @@
 </template>
 
 <script>
-import { LocalStorage } from 'quasar'
 import apiClient from '../service/api.js';
 export default {
   name: "usuarios", 
@@ -41,11 +40,6 @@ export default {
       ListaUsuarios: null
     };
   },
-  /*created() {
-    apiClient.get('/api/user').then(res =>{
-      console.log(res.data)
-    })
-  },*/
   methods: {
     EditarPerfil() {
       this.$router.push("/EditarPerfil");
@@ -60,7 +54,7 @@ export default {
     },
     obtenerUsuarios() {
       let cuenta = localStorage.getItem('id_cuenta')
-      apiClient.get("/api/v1/cuentas/1/users").then((res) => {
+      apiClient.get("/api/v1/cuentas/"+cuenta+"/users").then((res) => {
         this.ListaUsuarios = res.data.data;
         this.$q.loading.hide()
       });
@@ -71,7 +65,7 @@ export default {
     eliminarPerfil(id){
       apiClient.delete("/api/v1/users/"+id).then((res) => {
         this.$q.notify('Usuario eliminado')
-        apiClient.get("/api/v1/cuentas/1/users").then((res) => {
+        apiClient.get("/api/v1/cuentas/"+cuenta+"/users").then((res) => {
           this.ListaUsuarios = res.data.data;
         });
       })
