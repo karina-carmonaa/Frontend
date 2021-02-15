@@ -1,17 +1,17 @@
 
 <template>
   <q-page class="flex column"> 
-    <div class="col q-pt-lg q-px-md"></div>
+    <div class="col q-px-md"></div>
     <div class="col text-center">
       <q-img src="~assets/salud.png" style="max-width: 300px; height: 150px;" contain ></q-img>
-      <div class="q-gutter-y-md  q-px-xl">
-        <form @submit.prevent="inicio">
-          <q-input v-model="form.email" label="Correo electrónico">
+      <div class="q-gutter-y-md  q-px-md">
+        <form @submit.prevent="inicio" class="q-gutter-y-md">
+          <q-input v-model="form.email" outlined rounded placeholder="Correo electrónico">
             <template v-slot:append>
               <q-icon name="person" />
             </template>
           </q-input>
-          <q-input v-model="form.password" :type="isPwd ? 'password' : 'text'" label="Contraseña">
+          <q-input v-model="form.password" outlined rounded :type="isPwd ? 'password' : 'text'" placeholder="Contraseña" class="p-pt-xl">
             <template v-slot:append>
               <q-icon :name="isPwd ? 'visibility_off' : 'visibility'"
                 class="cursor-pointer" @click="isPwd = !isPwd" />

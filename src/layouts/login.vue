@@ -54,6 +54,6 @@ export default {
      //filter: grayscale(100%); //y en escala de grices
    }
   .bg-inicio{
-    background: linear-gradient(to bottom, #6dd5fa, #ffffff); 
+    background: linear-gradient(to bottom, #50c9c3, #96deda, #b2ebf2); 
   }
  </style>
