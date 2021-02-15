@@ -32,7 +32,7 @@ const routes = [
     component: () => import('pages/Error404.vue')
   },
   
-  { path: '/EditarPerfil', component: () => import('pages/EditarPerfil.vue') },
+  { path: '/resetPassword', component: () => import('pages/resetPassword.vue') },
   { path: '/nuevoUsuario/:id', component: () => import('pages/nuevoUsuario.vue') },
   { path: '/EstadoSalud', component: () => import('pages/EstadoSalud.vue') },
   { path: '/Seguimiento', component: () => import('pages/seguimientoSalud.vue') },

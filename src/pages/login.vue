@@ -17,8 +17,11 @@
                 class="cursor-pointer" @click="isPwd = !isPwd" />
             </template>
           </q-input>
-          <span class="text-right text-grey-9" to="/usuarios" flat  
-            no-caps no-wrap >¿Olvidaste tu contraseña? </span>
+          <span class="text-right text-grey-9">
+            <q-btn flat no-caps no-wrap to="/resetPassword" >
+             ¿Olvidaste tu contraseña?
+            </q-btn> 
+          </span>
           <br> <br>
           <q-btn label="Iniciar" type="iniciar" class="full-width" rounded color="blue"/>
         </form>
