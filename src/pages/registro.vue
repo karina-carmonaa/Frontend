@@ -2,18 +2,18 @@
   <q-page class="flex column">
     <div class="col q-px-xl"></div>
     <div class="col text-center">
-      <div class="q-gutter-y-md  q-px-md">
+      <div class="q-gutter-y-sm q-px-md">
           <label class="text-h3 text-weight-light" > Registro</label>     
-        <q-input placeholder="Correo electrónico" outlined  type="email" v-model="form.email"/>
-        <q-input v-model="form.password" type='password' outlined placeholder="Contraseña">         
+        <q-input class="q-pt-xl" placeholder="Correo electrónico" outlined rounded type="email" v-model="form.email"/>
+        <q-input v-model="form.password" type='password' outlined rounded placeholder="Contraseña">         
         </q-input>
-        <q-input bottom-slots outlined outlined v-model="form.password_confirmation" :type="isPwd ? 'password' : 'text'" placeholder="Confirmar contraseña" v-on:blur ="confirmar" v-on:focus="limpiar">
+        <q-input bottom-slots outlined rounded v-model="form.password_confirmation" :type="isPwd ? 'password' : 'text'" placeholder="Confirmar contraseña" v-on:blur ="confirmar" v-on:focus="limpiar">
           <template v-slot:append>
             <q-icon :name="isPwd ? 'visibility_off' : 'visibility'"
               class="cursor-pointer" @click="isPwd = !isPwd" />
           </template>
         </q-input>
-        <span v-if="!aceptado" class="text-red">Las constraseñas no coinciden</span>
+        <span v-if="aceptado" class="text-red">Las constraseñas no coinciden</span>
         <q-btn label="Crear usuario" class="full-width" @click="validar" rounded color="blue"/>
         <br><br>
         <span v-if="alert" class="text-red">Favor de llenar todos los campos del formulario</span>
@@ -40,7 +40,7 @@ export default {
         password_confirmation: null
       },
       isPwd: true,
-      aceptado: true,
+      aceptado: false,
       alert: false,
     }
   },
@@ -49,14 +49,13 @@ export default {
         registro: 'auth/registro'
       }),
         confirmar(){
-            if(this.form.password != this.form.password_confirmation){
-              this.aceptado = false
-            }else{
-              this.aceptado = true
-            }
+          if(this.form.password_confirmation != null && this.form.password_confirmation != ''){
+            if(this.form.password != this.form.password_confirmation) this.aceptado = true
+            else this.aceptado = false
+          }
         },
         async validar(){
-          if( this.form.password == null || this.form.password_confirmation == '' ||
+          if( this.form.password == null || this.form.password == '' || this.form.password_confirmation == '' ||
           this.form.email == null || this.form.email == ''){
             this.alert = true
           }else{
@@ -68,7 +67,7 @@ export default {
         },
         limpiar(){
           this.form.password_confirmation = null
-          this.aceptado= true
+          this.aceptado= false
         }
     }
 }
