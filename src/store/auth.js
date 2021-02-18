@@ -49,12 +49,7 @@ export default {
     async registro({ dispatch },credentials){
       await apiClient.get('/sanctum/csrf-cookie') 
       await apiClient.post('/register', credentials)
-      .then(() => {        
-        return dispatch('me')
-      })
-      .catch((err) => {
-        return console.log(err.response.data.message)
-      })
+      return dispatch('me')
     },
 
     me ({ commit }) {      

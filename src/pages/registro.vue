@@ -13,10 +13,10 @@
               class="cursor-pointer" @click="isPwd = !isPwd" />
           </template>
         </q-input>
-        <span v-if="aceptado" class="text-red">Las constraseñas no coinciden</span>
+        <span class="q-pb-md text-red-5 text-weight-bold">{{respuestaPassword}}</span>
         <q-btn label="Crear usuario" class="full-width" @click="validar" rounded color="blue"/>
         <br><br>
-        <span v-if="alert" class="text-red">Favor de llenar todos los campos del formulario</span>
+        <span class="q-pb-md text-red-5 text-weight-bolder">{{respuestaEmail}} </span>
         <div class="q-pt-xl text-center text-grey-9">
           <span class="text-center"> ¿Ya tienes una cuenta?
             <q-btn label="Inicia Sesión" flat :ripple="false" no-caps no-wrap to="/"  />
@@ -35,40 +35,42 @@ export default {
   data() {
     return {
       form: {
-        password: null,
-        email: null,
-        password_confirmation: null
+        password: '',
+        email: '',
+        password_confirmation: ''
       },
       isPwd: true,
-      aceptado: false,
-      alert: false,
+      respuestaEmail: '',
+      respuestaPassword: ''
     }
   },
-    methods: {
-      ...mapActions({
-        registro: 'auth/registro'
-      }),
-        confirmar(){
-          if(this.form.password_confirmation != null && this.form.password_confirmation != ''){
-            if(this.form.password != this.form.password_confirmation) this.aceptado = true
-            else this.aceptado = false
-          }
-        },
-        async validar(){
-          if( this.form.password == null || this.form.password == '' || this.form.password_confirmation == '' ||
-          this.form.email == null || this.form.email == ''){
-            this.alert = true
-          }else{
-            this.alert = false
-            await this.registro(this.form)
-            //console.log("user: ",this.$store.getters.["auth/user"])
-            this.$router.replace('/nuevoUsuario/'+localStorage.getItem("id_usuario"))
-          }          
-        },
-        limpiar(){
-          this.form.password_confirmation = null
-          this.aceptado= false
-        }
+  methods: {
+    ...mapActions({
+      registro: 'auth/registro'
+    }),
+    confirmar(){
+      if(this.form.password_confirmation != '' && this.form.password != ''){
+        if(this.form.password != this.form.password_confirmation) this.respuestaPassword = "Las contraseñas no coinciden"
+      }
+    },
+    async validar(){
+      if(this.form.password == '' || this.form.password_confirmation == '' || this.form.email == ''){
+        this.respuestaEmail = 'Favor de llenar todos los campos del formulario'
+      }else{
+        await this.registro(this.form).then((res) => {
+          this.$router.replace('/nuevoUsuario/'+localStorage.getItem("id_usuario")) })
+        .catch((err) => {
+          console.log(err.response.data)
+          if(err.response.data.errors.email) this.respuestaEmail = err.response.data.errors.email[0];
+          if(err.response.data.errors.password) this.respuestaPassword = err.response.data.errors.password[0];
+        })
+        //console.log("user: ",this.$store.getters.["auth/user"])
+      }          
+    },
+    limpiar(){
+      this.form.password_confirmation = null
+      this.aceptado= false
     }
+  }
 }
 </script>

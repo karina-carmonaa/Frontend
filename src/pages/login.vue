@@ -11,7 +11,7 @@
               <q-icon name="person" />
             </template>
           </q-input>
-          <q-input v-model="form.password" outlined rounded :type="isPwd ? 'password' : 'text'" placeholder="Contraseña" class="p-pt-xl">
+          <q-input v-model="form.password" outlined rounded :type="isPwd ? 'password' : 'text'" placeholder="Contraseña" >
             <template v-slot:append>
               <q-icon :name="isPwd ? 'visibility_off' : 'visibility'"
                 class="cursor-pointer" @click="isPwd = !isPwd" />
@@ -23,6 +23,7 @@
             </q-btn> 
           </span>
           <br> <br>
+          <label class="q-pb-md text-red-5 text-weight-bold">{{respuesta}} </label>
           <q-btn label="Iniciar" type="iniciar" class="full-width" rounded color="blue"/>
         </form>
         <div class="q-pt-xl text-center text-grey-9">
@@ -43,11 +44,12 @@ export default {
   data() {
     return {
       form: {
-          email: 'ejemploFinal1@ejemplo.com',
-          password: '12345678',
+          email: '',
+          password: '',
         },
       isPwd: true,
-      user: {}
+      user: {},
+      respuesta: null,
     }
   },
   methods: {
@@ -55,8 +57,13 @@ export default {
       login: 'auth/login'
     }),
     async inicio(){
-      await this.login(this.form)
-      this.$router.replace("/usuarios")
+      if(this.form.password != '' && this.form.email != ''){
+        await this.login(this.form)
+        .catch((err) => {
+          this.respuesta = err.response.data.errors.email[0]
+          console.log(err.response.data.errors.email[0])
+        })
+      } else this.respuesta = 'Favor de llenar todos los campos del formulario.'
     }
   }
 }

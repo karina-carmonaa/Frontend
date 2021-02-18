@@ -51,7 +51,7 @@ export default {
   data() {
     return {
       form: {        
-        email: 'karina.carmonav@hotmail.com'
+        email: ''
       },
       progress: 0.00,
       buffer: 0.00,
@@ -67,7 +67,7 @@ export default {
     },
     async resetPassword(){
       this.progress = this.buffer = 0
-      if(this.form.email == null || this.form.email == ""){
+      if(this.form.email == ""){
         this.respuesta = "Favor de escribir un correo electrónico valido"
       } else {
         this.bufferInterval = setInterval(() => {
